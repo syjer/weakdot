@@ -44,9 +44,10 @@ void handleKeysInSlideMode (KeyboardEvent event) {
 }
 
 void toggleEditMode() {
-  document.query("#edit_mode").style.display = 'block';
-  document.query("#slide_mode").style.display = 'none';
-  document.query("#editor_zone").style.display = 'table-cell';
+  document.query("#edit_mode").classes.remove('hide');
+  document.query("#editor_zone").classes.remove('hide');
+  document.query("#slide_mode").classes.add('hide');
+  
   
   document.query("#slides_container").classes.add("preview_edit_mode");
   document.body.classes.remove("full");
@@ -60,10 +61,10 @@ void toggleEditMode() {
 
 
 void toggleSlideMode() {
-  document.query("#edit_mode").style.display = 'none';
-  document.query("#slide_mode").style.display = 'block';
-  document.query("#editor_zone").style.display = 'none';
-  
+  document.query("#edit_mode").classes.add('hide');
+  document.query("#editor_zone").classes.add('hide');
+  document.query("#slide_mode").classes.remove('hide');
+
   document.query("#slides_container").classes.remove("preview_edit_mode");
   document.body.classes.add("full");
   
@@ -81,13 +82,13 @@ void main() {
   
   showHideButton.on.click.add((e) {
     
-    final slides_container = document.query("#slides_container");
+    final Element slides_container = document.query("#slides_container");
     
-    if (slides_container.style.display == 'none') {
-      slides_container.style.display = 'table-cell';
+    if (slides_container.classes.contains('hide')) {
+      slides_container.classes.remove('hide');
       showHideButton.text = 'hide preview';
     } else {
-      slides_container.style.display = 'none';
+      slides_container.classes.add('hide');
       showHideButton.text = 'show preview';
     }
   });

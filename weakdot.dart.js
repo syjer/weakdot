@@ -822,6 +822,9 @@ HashSetImplementation.prototype.clear = function() {
 HashSetImplementation.prototype.add = function(value) {
   this._backingMap.$setindex(value, value);
 }
+HashSetImplementation.prototype.contains = function(value) {
+  return this._backingMap.containsKey(value);
+}
 HashSetImplementation.prototype.remove = function(value) {
   if (!this._backingMap.containsKey(value)) return false;
   this._backingMap.remove(value);
@@ -1531,7 +1534,6 @@ $dynamic("get$_firstElementChild").Element = function() {
 $dynamic("set$innerHTML").Element = function(value) { return this.innerHTML = value; };
 $dynamic("get$nextElementSibling").Element = function() { return this.nextElementSibling; };
 $dynamic("get$previousElementSibling").Element = function() { return this.previousElementSibling; };
-$dynamic("get$style").Element = function() { return this.style; };
 $dynamic("get$title").Element = function() { return this.title; };
 $dynamic("get$click").Element = function() {
   return this.click.bind(this);
@@ -1691,30 +1693,20 @@ $dynamic("get$length").CharacterData = function() { return this.length; };
 // ********** Code for _CSSRuleImpl **************
 // ********** Code for _CSSCharsetRuleImpl **************
 // ********** Code for _CSSFontFaceRuleImpl **************
-$dynamic("get$style").CSSFontFaceRule = function() { return this.style; };
 // ********** Code for _CSSImportRuleImpl **************
 // ********** Code for _CSSKeyframeRuleImpl **************
-$dynamic("get$style").WebKitCSSKeyframeRule = function() { return this.style; };
 // ********** Code for _CSSKeyframesRuleImpl **************
 $dynamic("get$name").WebKitCSSKeyframesRule = function() { return this.name; };
 // ********** Code for _CSSMatrixImpl **************
 // ********** Code for _CSSMediaRuleImpl **************
 // ********** Code for _CSSPageRuleImpl **************
-$dynamic("get$style").CSSPageRule = function() { return this.style; };
 // ********** Code for _CSSValueImpl **************
 // ********** Code for _CSSPrimitiveValueImpl **************
 // ********** Code for _CSSRuleListImpl **************
 $dynamic("get$length").CSSRuleList = function() { return this.length; };
 // ********** Code for _CSSStyleDeclarationImpl **************
 $dynamic("get$length").CSSStyleDeclaration = function() { return this.length; };
-$dynamic("get$display").CSSStyleDeclaration = function() {
-  return this.getPropertyValue("display");
-}
-$dynamic("set$display").CSSStyleDeclaration = function(value) {
-  this.setProperty("display", value, "");
-}
 // ********** Code for _CSSStyleRuleImpl **************
-$dynamic("get$style").CSSStyleRule = function() { return this.style; };
 // ********** Code for _StyleSheetImpl **************
 $dynamic("get$title").StyleSheet = function() { return this.title; };
 // ********** Code for _CSSStyleSheetImpl **************
@@ -2023,9 +2015,6 @@ $dynamic("get$attributes").DocumentFragment = function() {
 }
 $dynamic("get$classes").DocumentFragment = function() {
   return new HashSetImplementation_dart_core_String();
-}
-$dynamic("get$style").DocumentFragment = function() {
-  return _ElementFactoryProvider.Element$tag$factory("div").get$style();
 }
 $dynamic("click").DocumentFragment = function() {
 
@@ -3230,6 +3219,9 @@ _CssClassSet.prototype.some = function(f) {
 _CssClassSet.prototype.get$length = function() {
   return this._read().get$length();
 }
+_CssClassSet.prototype.contains = function(value) {
+  return this._read().contains(value);
+}
 _CssClassSet.prototype.add = function(value) {
   this._modify((function (s) {
     return s.add$1(value);
@@ -3375,7 +3367,6 @@ $dynamic("is$html_Element").SVGFETurbulenceElement = function(){return true};
 // ********** Code for _SVGFilterElementImpl **************
 $dynamic("is$html_Element").SVGFilterElement = function(){return true};
 // ********** Code for _SVGStylableImpl **************
-$dynamic("get$style").SVGStylable = function() { return this.style; };
 // ********** Code for _SVGFilterPrimitiveStandardAttributesImpl **************
 // ********** Code for _SVGFitToViewBoxImpl **************
 // ********** Code for _SVGFontElementImpl **************
@@ -4887,9 +4878,9 @@ function handleKeysInSlideMode(event) {
   event.preventDefault();
 }
 function toggleEditMode() {
-  get$$document().query("#edit_mode").style.set$display("block");
-  get$$document().query("#slide_mode").style.set$display("none");
-  get$$document().query("#editor_zone").style.set$display("table-cell");
+  get$$document().query("#edit_mode").get$classes().remove("hide");
+  get$$document().query("#editor_zone").get$classes().remove("hide");
+  get$$document().query("#slide_mode").get$classes().add("hide");
   get$$document().query("#slides_container").get$classes().add("preview_edit_mode");
   get$$document().get$body().get$classes().remove("full");
   if (get$$document().query(".selected-slide") != null) {
@@ -4898,9 +4889,9 @@ function toggleEditMode() {
   get$$document().get$on().get$keyDown().remove(handleKeysInSlideMode, false);
 }
 function toggleSlideMode() {
-  get$$document().query("#edit_mode").style.set$display("none");
-  get$$document().query("#slide_mode").style.set$display("block");
-  get$$document().query("#editor_zone").style.set$display("none");
+  get$$document().query("#edit_mode").get$classes().add("hide");
+  get$$document().query("#editor_zone").get$classes().add("hide");
+  get$$document().query("#slide_mode").get$classes().remove("hide");
   get$$document().query("#slides_container").get$classes().remove("preview_edit_mode");
   get$$document().get$body().get$classes().add("full");
   if (get$$document().query(".slide-container") != null) {
@@ -4912,12 +4903,12 @@ function main() {
   var showHideButton = get$$document().query("#show_hide_preview_button");
   showHideButton.get$on().get$click().add$1((function (e) {
     var slides_container = get$$document().query("#slides_container");
-    if (slides_container.get$style().get$display() == "none") {
-      slides_container.get$style().set$display("table-cell");
+    if (slides_container.get$classes().contains("hide")) {
+      slides_container.get$classes().remove("hide");
       showHideButton.set$text("hide preview");
     }
     else {
-      slides_container.get$style().set$display("none");
+      slides_container.get$classes().add("hide");
       showHideButton.set$text("show preview");
     }
   })
@@ -4937,9 +4928,9 @@ function main() {
   toggleEditMode();
   updateSlides();
 }
-// 267 dynamic types.
-// 285 types
-// 24 !leaf
+// 262 dynamic types.
+// 279 types
+// 23 !leaf
 function $dynamicSetMetadata(inputTable) {
   // TODO: Deal with light isolates.
   var table = [];
@@ -4991,7 +4982,6 @@ function $dynamicSetMetadata(inputTable) {
     , ['Node', v12/*Node*/]
     , ['EventTarget', [v11/*AbstractWorker*/,v12/*Node*/,'EventTarget|DOMApplicationCache|EventSource|MessagePort|Notification|SVGElementInstance|WebSocket|DOMWindow|XMLHttpRequest|XMLHttpRequestUpload'].join('|')]
     , ['HTMLCollection', 'HTMLCollection|HTMLOptionsCollection']
-    , ['SVGStylable', 'SVGStylable|SVGFilterPrimitiveStandardAttributes']
     , ['StyleSheet', 'StyleSheet|CSSStyleSheet']
     , ['Uint8Array', 'Uint8Array|Uint8ClampedArray']
   ];

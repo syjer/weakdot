@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
   <head>
     <title>test</title>
@@ -88,8 +87,19 @@ body {
 }
 
 .preview_edit_mode section.slide {
+	transform: scale(0.5);
+	transform-origin: 0 0;
     -moz-transform: scale(0.5);
     -moz-transform-origin: 0 0;
+    
+    -ms-transform: scale(0.5);
+    -ms-transform-origin: 0 0;
+    
+    -webkit-transform: scale(0.5);
+    -webkit-transform-origin: 0 0;
+    
+    -o-transform: scale(0.5);
+    -o-transform-origin: 0 0;
 }
 
 section.slide {
@@ -189,6 +199,10 @@ section.slide blockquote {
 
 #editing_area {
 	margin-top:30px;
+}
+
+.hide {
+	display:none!important;
 }
 
     </style>

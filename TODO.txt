@@ -1,5 +1,7 @@
 TODO:
 -----
+0: isolate bug with IE: element.style.display = 'none'; generate an error.
+
 1: apply transform to slide for fitting the window! 
 
 

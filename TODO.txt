@@ -1,0 +1,22 @@
+TODO:
+-----
+1: apply transform to slide for fitting the window! 
+
+
+
+misc links & stuff.
+
+see
+
+- http://dartwatch.com/index.php/2012/03/dartium-for-windows-binaries-now-available/
+
+
+For slides:
+
+	- https://github.com/schacon/showoff
+	- https://github.com/adamzap/landslide
+	- http://pepelsbey.github.com/shower/en.htm?full#ThankYou
+
+
+- autoresize :
+	- http://tech.irae.pro/post/7184485451/auto-growing-textareas-with-jquery-the-perfectionist

@@ -1,0 +1,23 @@
+Markdown code imported from https://dart.googlecode.com/svn-history/r3537/branches/bleeding_edge/dart/samples/markdown/
+use the following license: https://dart.googlecode.com/svn-history/r3537/branches/bleeding_edge/LICENSE .
+
+Portion of the css is imported/inspired from https://github.com/pepelsbey/shower use the following license:
+https://raw.github.com/pepelsbey/shower/master/license.txt
+
+
+The rest is under the WTFPL:
+
+
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+                    Version 2, December 2004
+
+ Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+
+ Everyone is permitted to copy and distribute verbatim or modified
+ copies of this license document, and changing it is allowed as long
+ as the name is changed.
+
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+  0. You just DO WHAT THE FUCK YOU WANT TO. 

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>test</title>
+    <style type="text/css">
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* end reset */
+    
+    
+
+body {  
+	counter-reset: preview_slide_page; 
+	font-family:sans-serif;
+} 
+
+.preview_edit_mode > div {
+	width:512px;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+.preview_edit_mode > div:after {
+	content: counter(preview_slide_page, decimal-leading-zero);
+	counter-increment: preview_slide_page;
+	font-weight:bold;
+	font-size:30px;
+	top:-60px;
+	position:relative;
+}
+
+.preview_edit_mode > div > div {
+	margin-left:auto;
+	margin-right:auto;
+	height: 320px;
+	width:512px;
+	overflow:hidden;
+	box-shadow: 0 0 50px #3C3D40;
+	margin-bottom:85px;
+}
+
+.preview_edit_mode section.slide {
+    -moz-transform: scale(0.5);
+    -moz-transform-origin: 0 0;
+}
+
+section.slide {
+	background-color:white;
+}
+
+section.slide {
+	font-size:25px;
+	font-family:sans-serif;
+}
+
+section.slide {
+	color: #000000;
+    height: 560px;
+    padding: 80px 120px 0;
+    width: 784px;
+}
+
+
+section.slide h1, 
+section.slide h2, 
+section.slide h3, 
+section.slide h4, 
+section.slide h5, 
+section.slide h6, 
+section.slide h7 {
+	color: #666666;
+	font-weight: bold;
+	font-size: 40px;
+	margin-bottom:58px;
+}
+
+section.slide ol,
+section.slide ul {
+	margin-bottom: 45px;
+	counter-reset:list;
+}
+
+section.slide ul li:before {
+	content: "•";
+	font-weight:bold;
+}
+
+section.slide ol > li:before {
+    content: counter(list, decimal) ".";
+    counter-increment: list;
+}
+
+section.slide ol > li:before, 
+section.slide ul > li:before {
+    color: #BBBBBB;
+    margin-left: -120px;
+    position: absolute;
+    text-align: right;
+    width: 100px;
+}
+
+section.slide li {
+	line-height: 1.75;
+}
+
+section.slide p {
+	margin-bottom: 45px;
+	line-height:1.5;
+}
+
+
+section.slide blockquote {
+	font-style:italic;
+	border-left:20px solid #ccc;
+	padding-left:10px;
+}
+
+.full {
+    background: none repeat scroll 0 0 #000000;
+    height: 640px;
+    left: 50%;
+    margin: -320px 0 0 -512px;
+    overflow: hidden;
+    position: absolute;
+    top: 50%;
+    width: 1024px;
+}
+
+.full .slide-container {
+	display:none;
+}
+
+.full .slide-container.selected-slide {
+	display:block;
+}
+
+#controls {
+	position:absolute;
+	top:0;
+}
+
+#editing_area {
+	margin-top:30px;
+}
+
+    </style>
+  </head>
+  <body>
+  
+  	<div id="controls">
+  		<div id="edit_mode">
+  			<button id="show_hide_preview_button">hide preview</button>
+  			<button id="toggle_slide_mode_button">launch slides</button>
+  		</div>
+  		<div id="slide_mode">
+  			<button id="toggle_edit_mode_button">edit mode</button>
+  		</div>
+  		
+  		
+  	</div>
+  
+  	<div style="display:table; width:100%;" id="editing_area">
+  		<div style="display:table-row">
+  			<div style="display:table-cell;width:50%" id="editor_zone">
+    			<textarea id="text" style="width:100%;min-height:300px;">
+    			
+#slide title
+
+some text. _em_ and __strong__.
+
+or *em* and **strong**.
+
+Add 3 dash for creating a new slide
+
+---
+#a slide appear! (with list)
+
+- one
+- two 
+- three
+
+inline  html work too:
+
+<ol>
+ <li>test
+ <li>test2
+</ol>
+
+---
+#quoting
+
+> test sdfa f asd sf a
+> dsfasfds sf
+> fdsfasfd
+>> test
+> a
+    			
+    			</textarea>
+    		</div>
+    		<div id="slides_container" style="display:table-cell;padding-left:10px;vertical-align: top;">&nbsp;</div>
+    	</div>
+    </div>
+    
+    <script type="application/dart" src="weakdot.dart"></script>
+    <script src="http://dart.googlecode.com/svn/branches/bleeding_edge/dart/client/dart.js"></script>
+  </body>
+</html>

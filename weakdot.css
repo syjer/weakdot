@@ -188,12 +188,9 @@ section.slide blockquote {
 }
 
 #controls {
-	position:absolute;
-	top:0;
 }
 
 #editing_area {
-	margin-top:30px;
 	display:table;
 	width:100%;
 }

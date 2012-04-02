@@ -286,6 +286,24 @@ Function.prototype.call$2 = function($0, $1) {
   return this.to$call$2()($0, $1);
 };
 function to$call$2(f) { return f && f.to$call$2(); }
+// ********** Code for FutureNotCompleteException **************
+function FutureNotCompleteException() {
+
+}
+FutureNotCompleteException.prototype.toString = function() {
+  return "Exception: future has not been completed";
+}
+// ********** Code for FutureAlreadyCompleteException **************
+function FutureAlreadyCompleteException() {
+
+}
+FutureAlreadyCompleteException.prototype.toString = function() {
+  return "Exception: future already completed";
+}
+// ********** Code for Math **************
+Math.max = function(a, b) {
+  return (a >= b) ? a : b;
+}
 // ********** Code for Strings **************
 function Strings() {}
 Strings.join = function(strings, separator) {
@@ -441,25 +459,25 @@ ImmutableList.prototype.get$length = function() {
   return this.length;
 }
 ImmutableList.prototype.set$length = function(length) {
-  $throw(const$0014);
+  $throw(const$0016);
 }
 ImmutableList.prototype.$setindex = function(index, value) {
-  $throw(const$0014);
+  $throw(const$0016);
 }
 ImmutableList.prototype.removeRange = function(start, length) {
-  $throw(const$0014);
+  $throw(const$0016);
 }
 ImmutableList.prototype.add = function(element) {
-  $throw(const$0014);
+  $throw(const$0016);
 }
 ImmutableList.prototype.addAll = function(elements) {
-  $throw(const$0014);
+  $throw(const$0016);
 }
 ImmutableList.prototype.clear = function() {
-  $throw(const$0014);
+  $throw(const$0016);
 }
 ImmutableList.prototype.removeLast = function() {
-  $throw(const$0014);
+  $throw(const$0016);
 }
 ImmutableList.prototype.toString = function() {
   return Collections.collectionToString(this);
@@ -487,10 +505,10 @@ ImmutableMap.prototype.containsKey = function(key) {
   return this._internal.containsKey(key);
 }
 ImmutableMap.prototype.$setindex = function(key, value) {
-  $throw(const$0014);
+  $throw(const$0016);
 }
 ImmutableMap.prototype.clear = function() {
-  $throw(const$0014);
+  $throw(const$0016);
 }
 ImmutableMap.prototype.toString = function() {
   return Maps.mapToString(this);
@@ -639,6 +657,97 @@ Collections._containsRef = function(c, ref) {
     if ((null == e ? null == (ref) : e === ref)) return true;
   }
   return false;
+}
+// ********** Code for FutureImpl **************
+function FutureImpl() {
+  this._listeners = new Array();
+  this._exceptionHandlers = new Array();
+  this._isComplete = false;
+  this._exceptionHandled = false;
+}
+FutureImpl.prototype.get$value = function() {
+  if (!this.get$isComplete()) {
+    $throw(new FutureNotCompleteException());
+  }
+  if (null != this._exception) {
+    $throw(this._exception);
+  }
+  return this._value;
+}
+FutureImpl.prototype.get$isComplete = function() {
+  return this._isComplete;
+}
+FutureImpl.prototype.get$hasValue = function() {
+  return this.get$isComplete() && null == this._exception;
+}
+FutureImpl.prototype.then = function(onComplete) {
+  if (this.get$hasValue()) {
+    onComplete(this.get$value());
+  }
+  else if (!this.get$isComplete()) {
+    this._listeners.add(onComplete);
+  }
+  else if (!this._exceptionHandled) {
+    $throw(this._exception);
+  }
+}
+FutureImpl.prototype._complete = function() {
+  this._isComplete = true;
+  if (null != this._exception) {
+    var $$list = this._exceptionHandlers;
+    for (var $$i = $$list.iterator(); $$i.hasNext(); ) {
+      var handler = $$i.next();
+      if (handler.call$1(this._exception)) {
+        this._exceptionHandled = true;
+        break;
+      }
+    }
+  }
+  if (this.get$hasValue()) {
+    var $$list = this._listeners;
+    for (var $$i = $$list.iterator(); $$i.hasNext(); ) {
+      var listener = $$i.next();
+      listener.call$1(this.get$value());
+    }
+  }
+  else {
+    if (!this._exceptionHandled && this._listeners.get$length() > (0)) {
+      $throw(this._exception);
+    }
+  }
+}
+FutureImpl.prototype._setValue = function(value) {
+  if (this._isComplete) {
+    $throw(new FutureAlreadyCompleteException());
+  }
+  this._value = value;
+  this._complete();
+}
+FutureImpl.prototype._setException = function(exception) {
+  if (null == exception) {
+    $throw(new IllegalArgumentException(null));
+  }
+  if (this._isComplete) {
+    $throw(new FutureAlreadyCompleteException());
+  }
+  this._exception = exception;
+  this._complete();
+}
+// ********** Code for CompleterImpl **************
+function CompleterImpl() {}
+CompleterImpl.prototype.get$future = function() {
+  return this._futureImpl;
+}
+CompleterImpl.prototype.complete = function(value) {
+  this._futureImpl._setValue(value);
+}
+CompleterImpl.prototype.completeException = function(exception) {
+  this._futureImpl._setException(exception);
+}
+// ********** Code for CompleterImpl_ElementRect **************
+$inherits(CompleterImpl_ElementRect, CompleterImpl);
+function CompleterImpl_ElementRect() {
+  this._futureImpl = new FutureImpl();
 }
 // ********** Code for HashMapImplementation **************
 function HashMapImplementation() {
@@ -1209,6 +1318,9 @@ StringImplementation.prototype.startsWith = function(other) {
 StringImplementation.prototype.isEmpty = function() {
   return this.length == (0);
 }
+StringImplementation.prototype.contains = function(pattern, startIndex) {
+  'use strict'; return this.indexOf(pattern, startIndex) >= 0;
+}
 StringImplementation.prototype._replaceRegExp = function(from, to) {
   'use strict';return this.replace(from.re, to);
 }
@@ -1516,6 +1628,13 @@ $dynamic("get$classes").Element = function() {
   }
   return this._cssClassSet;
 }
+$dynamic("get$rect").Element = function() {
+  var $this = this; // closure support
+  return _createMeasurementFuture((function () {
+    return new _ElementRectImpl($this);
+  })
+  , new CompleterImpl_ElementRect());
+}
 $dynamic("get$on").Element = function() {
   return new _ElementEventsImpl(this);
 }
@@ -1528,12 +1647,48 @@ $dynamic("get$_className").Element = function() {
 $dynamic("set$_className").Element = function(value) {
   this.className = value;
 }
+$dynamic("get$_clientHeight").Element = function() {
+  return this.clientHeight;
+}
+$dynamic("get$_clientLeft").Element = function() {
+  return this.clientLeft;
+}
+$dynamic("get$_clientTop").Element = function() {
+  return this.clientTop;
+}
+$dynamic("get$_clientWidth").Element = function() {
+  return this.clientWidth;
+}
 $dynamic("get$_firstElementChild").Element = function() {
   return this.firstElementChild;
 }
 $dynamic("set$innerHTML").Element = function(value) { return this.innerHTML = value; };
 $dynamic("get$nextElementSibling").Element = function() { return this.nextElementSibling; };
+$dynamic("get$_offsetHeight").Element = function() {
+  return this.offsetHeight;
+}
+$dynamic("get$_offsetLeft").Element = function() {
+  return this.offsetLeft;
+}
+$dynamic("get$_offsetTop").Element = function() {
+  return this.offsetTop;
+}
+$dynamic("get$_offsetWidth").Element = function() {
+  return this.offsetWidth;
+}
 $dynamic("get$previousElementSibling").Element = function() { return this.previousElementSibling; };
+$dynamic("get$_scrollHeight").Element = function() {
+  return this.scrollHeight;
+}
+$dynamic("get$_scrollLeft").Element = function() {
+  return this.scrollLeft;
+}
+$dynamic("get$_scrollTop").Element = function() {
+  return this.scrollTop;
+}
+$dynamic("get$_scrollWidth").Element = function() {
+  return this.scrollWidth;
+}
 $dynamic("get$title").Element = function() { return this.title; };
 $dynamic("get$click").Element = function() {
   return this.click.bind(this);
@@ -1563,6 +1718,12 @@ Function.prototype.bind = Function.prototype.bind ||
   };
 $dynamic("_getAttribute").Element = function(name) {
   return this.getAttribute(name);
+}
+$dynamic("_getBoundingClientRect").Element = function() {
+  return this.getBoundingClientRect();
+}
+$dynamic("_getClientRects").Element = function() {
+  return this.getClientRects();
 }
 $dynamic("_hasAttribute").Element = function(name) {
   return this.hasAttribute(name);
@@ -1706,6 +1867,15 @@ $dynamic("get$name").WebKitCSSKeyframesRule = function() { return this.name; };
 $dynamic("get$length").CSSRuleList = function() { return this.length; };
 // ********** Code for _CSSStyleDeclarationImpl **************
 $dynamic("get$length").CSSStyleDeclaration = function() { return this.length; };
+$dynamic("set$left").CSSStyleDeclaration = function(value) {
+  this.setProperty("left", value, "");
+}
+$dynamic("set$position").CSSStyleDeclaration = function(value) {
+  this.setProperty("position", value, "");
+}
+$dynamic("set$transform").CSSStyleDeclaration = function(value) {
+  this.setProperty(("" + get$$_browserPrefix() + "transform"), value, "");
+}
 // ********** Code for _CSSStyleRuleImpl **************
 // ********** Code for _StyleSheetImpl **************
 $dynamic("get$title").StyleSheet = function() { return this.title; };
@@ -1870,6 +2040,9 @@ $dynamic("get$on").HTMLHtmlElement = function() {
 $dynamic("get$body").HTMLHtmlElement = function() {
   return this.parentNode.body;
 }
+$dynamic("get$window").HTMLHtmlElement = function() {
+  return this.parentNode.defaultView;
+}
 $dynamic("get$title").HTMLHtmlElement = function() {
   return this.parentNode.title;
 }
@@ -2011,7 +2184,7 @@ $dynamic("get$parent").DocumentFragment = function() {
   return null;
 }
 $dynamic("get$attributes").DocumentFragment = function() {
-  return const$0015;
+  return const$0017;
 }
 $dynamic("get$classes").DocumentFragment = function() {
   return new HashSetImplementation_dart_core_String();
@@ -2105,7 +2278,7 @@ _ChildrenElementList.prototype.addAll = function(collection) {
   }
 }
 _ChildrenElementList.prototype.removeRange = function(start, length) {
-  $throw(const$0013);
+  $throw(const$0015);
 }
 _ChildrenElementList.prototype.getRange = function(start, length) {
   return new _FrozenElementList._wrap$ctor(_Lists.getRange(this, start, length, []));
@@ -2350,6 +2523,27 @@ ElementAttributeMap.prototype.get$length = function() {
   return this._html_element.get$_attributes().length;
 }
 ElementAttributeMap.prototype.clear$0 = ElementAttributeMap.prototype.clear;
+// ********** Code for _SimpleClientRect **************
+function _SimpleClientRect(left, top, width, height) {
+  this.left = left;
+  this.top = top;
+  this.width = width;
+  this.height = height;
+}
+_SimpleClientRect.prototype.$eq = function(other) {
+  return null != other && this.left == other.left && this.top == other.top && this.width == other.width && this.height == other.height;
+}
+_SimpleClientRect.prototype.toString = function() {
+  return ("(" + this.left + ", " + this.top + ", " + this.width + ", " + this.height + ")");
+}
+// ********** Code for _ElementRectImpl **************
+function _ElementRectImpl(element) {
+  this.client = new _SimpleClientRect(element.get$_clientLeft(), element.get$_clientTop(), element.get$_clientWidth(), element.get$_clientHeight());
+  this.offset = new _SimpleClientRect(element.get$_offsetLeft(), element.get$_offsetTop(), element.get$_offsetWidth(), element.get$_offsetHeight());
+  this.scroll = new _SimpleClientRect(element.get$_scrollLeft(), element.get$_scrollTop(), element.get$_scrollWidth(), element.get$_scrollHeight());
+  this._boundingClientRect = element._getBoundingClientRect();
+  this._clientRects = element._getClientRects();
+}
 // ********** Code for _ElementTimeControlImpl **************
 // ********** Code for _ElementTraversalImpl **************
 // ********** Code for _EmbedElementImpl **************
@@ -3921,6 +4115,12 @@ _WindowEventsImpl.prototype.get$click = function() {
 _WindowEventsImpl.prototype.get$keyUp = function() {
   return this._get("keyup");
 }
+_WindowEventsImpl.prototype.get$message = function() {
+  return this._get("message");
+}
+_WindowEventsImpl.prototype.get$resize = function() {
+  return this._get("resize");
+}
 // ********** Code for _WorkerImpl **************
 $dynamic("get$on").Worker = function() {
   return new _WorkerEventsImpl(this);
@@ -3995,10 +4195,26 @@ _Collections.filter = function(source, destination, f) {
   }
   return destination;
 }
+// ********** Code for _MeasurementRequest **************
+function _MeasurementRequest(computeValue, completer) {
+  this.exception = false;
+  this.computeValue = computeValue;
+  this.completer = completer;
+}
+_MeasurementRequest.prototype.get$value = function() { return this.value; };
+_MeasurementRequest.prototype.set$value = function(value) { return this.value = value; };
 // ********** Code for _ElementFactoryProvider **************
 function _ElementFactoryProvider() {}
 _ElementFactoryProvider.Element$tag$factory = function(tag) {
   return get$$_document()._createElement(tag);
+}
+// ********** Code for _Device **************
+function _Device() {}
+_Device.get$userAgent = function() {
+  return get$$window().navigator.userAgent;
+}
+_Device.get$isFirefox = function() {
+  return _Device.get$userAgent().contains("Firefox", (0));
 }
 // ********** Code for _VariableSizeListIterator **************
 function _VariableSizeListIterator() {}
@@ -4130,6 +4346,12 @@ function _init() {
     $throw(new UnsupportedOperationException("Cannot import dart:html and dart:dom within the same application."));
   }
 }
+function get$$window() {
+  if ($globals._cachedWindow == null) {
+    _init();
+  }
+  return $globals._cachedWindow;
+}
 function get$$_window() {
   return window;
 }
@@ -4143,8 +4365,79 @@ function get$$_document() {
   return window.document.documentElement;
 }
 var _cachedBrowserPrefix;
+function get$$_browserPrefix() {
+  if (null == $globals._cachedBrowserPrefix) {
+    if (_Device.get$isFirefox()) {
+      $globals._cachedBrowserPrefix = "-moz-";
+    }
+    else {
+      $globals._cachedBrowserPrefix = "-webkit-";
+    }
+  }
+  return $globals._cachedBrowserPrefix;
+}
 var _pendingRequests;
 var _pendingMeasurementFrameCallbacks;
+function _maybeScheduleMeasurementFrame() {
+  if ($globals._nextMeasurementFrameScheduled) return;
+  $globals._nextMeasurementFrameScheduled = true;
+  if ($globals._firstMeasurementRequest) {
+    get$$window().get$on().get$message().add((function (e) {
+      return _completeMeasurementFutures();
+    })
+    , false);
+    $globals._firstMeasurementRequest = false;
+  }
+  get$$window().postMessage("DART-MEASURE", "*");
+}
+function _createMeasurementFuture(computeValue, completer) {
+  if (null == $globals._pendingRequests) {
+    $globals._pendingRequests = [];
+    _maybeScheduleMeasurementFrame();
+  }
+  $globals._pendingRequests.add(new _MeasurementRequest(computeValue, completer));
+  return completer.get$future();
+}
+function _completeMeasurementFutures() {
+  if ($eq$($globals._nextMeasurementFrameScheduled, false)) {
+    return;
+  }
+  $globals._nextMeasurementFrameScheduled = false;
+  if (null != $globals._pendingRequests) {
+    var $$list = $globals._pendingRequests;
+    for (var $$i = $$list.iterator(); $$i.hasNext(); ) {
+      var request = $$i.next();
+      try {
+        request.value = request.computeValue();
+      } catch (e) {
+        e = _toDartException(e);
+        request.value = e;
+        request.exception = true;
+      }
+    }
+  }
+  var completedRequests = $globals._pendingRequests;
+  var readyMeasurementFrameCallbacks = $globals._pendingMeasurementFrameCallbacks;
+  $globals._pendingRequests = null;
+  $globals._pendingMeasurementFrameCallbacks = null;
+  if (null != completedRequests) {
+    for (var $$i = completedRequests.iterator(); $$i.hasNext(); ) {
+      var request = $$i.next();
+      if (request.exception) {
+        request.completer.completeException(request.value);
+      }
+      else {
+        request.completer.complete(request.value);
+      }
+    }
+  }
+  if (null != readyMeasurementFrameCallbacks) {
+    for (var $$i = readyMeasurementFrameCallbacks.iterator(); $$i.hasNext(); ) {
+      var handler = $$i.next();
+      handler();
+    }
+  }
+}
 //  ********** Library markdown **************
 // ********** Code for markdown_Document **************
 function markdown_Document() {
@@ -4316,7 +4609,7 @@ function EmptyBlockSyntax() {
   BlockSyntax.call(this);
 }
 EmptyBlockSyntax.prototype.get$pattern = function() {
-  return const$0011;
+  return const$0013;
 }
 EmptyBlockSyntax.prototype.parse = function(parser) {
   parser.advance();
@@ -4329,10 +4622,10 @@ function SetextHeaderSyntax() {
   BlockSyntax.call(this);
 }
 SetextHeaderSyntax.prototype.canParse = function(parser) {
-  return parser.matchesNext(const$0012);
+  return parser.matchesNext(const$0014);
 }
 SetextHeaderSyntax.prototype.parse = function(parser) {
-  var match = const$0012.firstMatch(parser.get$next());
+  var match = const$0014.firstMatch(parser.get$next());
   var tag = ($eq$(match.$index((1)).$index((0)), "=")) ? "h1" : "h2";
   var contents = parser.document.parseInline(parser.get$current());
   parser.advance();
@@ -4346,7 +4639,7 @@ function HeaderSyntax() {
   BlockSyntax.call(this);
 }
 HeaderSyntax.prototype.get$pattern = function() {
-  return const$0008;
+  return const$0010;
 }
 HeaderSyntax.prototype.parse = function(parser) {
   var match = this.get$pattern().firstMatch(parser.get$current());
@@ -4362,7 +4655,7 @@ function BlockquoteSyntax() {
   BlockSyntax.call(this);
 }
 BlockquoteSyntax.prototype.get$pattern = function() {
-  return const$0004;
+  return const$0006;
 }
 BlockquoteSyntax.prototype.parse = function(parser) {
   var childLines = this.parseChildLines(parser);
@@ -4376,7 +4669,7 @@ function CodeBlockSyntax() {
   BlockSyntax.call(this);
 }
 CodeBlockSyntax.prototype.get$pattern = function() {
-  return const$0006;
+  return const$0008;
 }
 CodeBlockSyntax.prototype.parse = function(parser) {
   var childLines = this.parseChildLines(parser);
@@ -4391,7 +4684,7 @@ function HorizontalRuleSyntax() {
   BlockSyntax.call(this);
 }
 HorizontalRuleSyntax.prototype.get$pattern = function() {
-  return const$0010;
+  return const$0012;
 }
 HorizontalRuleSyntax.prototype.parse = function(parser) {
   var match = this.get$pattern().firstMatch(parser.get$current());
@@ -4405,14 +4698,14 @@ function BlockHtmlSyntax() {
   BlockSyntax.call(this);
 }
 BlockHtmlSyntax.prototype.get$pattern = function() {
-  return const$0009;
+  return const$0011;
 }
 BlockHtmlSyntax.prototype.get$canEndBlock = function() {
   return false;
 }
 BlockHtmlSyntax.prototype.parse = function(parser) {
   var childLines = [];
-  while (!parser.get$isDone() && !parser.matches(const$0011)) {
+  while (!parser.get$isDone() && !parser.matches(const$0013)) {
     childLines.add$1(parser.get$current());
     parser.advance();
   }
@@ -4451,14 +4744,14 @@ ListSyntax.prototype.parse = function(parser) {
   }
   var afterEmpty = false;
   while (!parser.get$isDone()) {
-    if (tryMatch(const$0011)) {
+    if (tryMatch(const$0013)) {
       childLines.add$1("");
     }
-    else if (tryMatch(const$0005) || tryMatch(const$0007)) {
+    else if (tryMatch(const$0007) || tryMatch(const$0009)) {
       endItem();
       childLines.add$1(match.$index((1)));
     }
-    else if (tryMatch(const$0006)) {
+    else if (tryMatch(const$0008)) {
       childLines.add$1(match.$index((1)));
     }
     else if (BlockSyntax.isAtBlockEnd(parser)) {
@@ -4475,7 +4768,7 @@ ListSyntax.prototype.parse = function(parser) {
    i < items.get$length(); i++) {
     for (var j = items.$index(i).get$lines().get$length() - (1);
      j > (0); j--) {
-      if (const$0011.firstMatch(items.$index(i).get$lines().$index(j)) != null) {
+      if (const$0013.firstMatch(items.$index(i).get$lines().$index(j)) != null) {
         if (i < items.get$length() - (1)) {
           items.$index(i).set$forceBlock(true);
           items.$index(i + (1)).set$forceBlock(true);
@@ -4491,7 +4784,7 @@ ListSyntax.prototype.parse = function(parser) {
   for (var $$i = items.iterator(); $$i.hasNext(); ) {
     var item = $$i.next();
     var blockItem = item.get$forceBlock() || (item.get$lines().get$length() > (1));
-    var blocksInList = const$0016;
+    var blocksInList = const$0018;
     if (!blockItem) {
       for (var $i0 = blocksInList.iterator(); $i0.hasNext(); ) {
         var pattern = $i0.next();
@@ -4519,7 +4812,7 @@ function UnorderedListSyntax() {
   ListSyntax.call(this);
 }
 UnorderedListSyntax.prototype.get$pattern = function() {
-  return const$0005;
+  return const$0007;
 }
 UnorderedListSyntax.prototype.get$listTag = function() {
   return "ul";
@@ -4530,7 +4823,7 @@ function OrderedListSyntax() {
   ListSyntax.call(this);
 }
 OrderedListSyntax.prototype.get$pattern = function() {
-  return const$0007;
+  return const$0009;
 }
 OrderedListSyntax.prototype.get$listTag = function() {
   return "ol";
@@ -4572,7 +4865,7 @@ HtmlRenderer.prototype.visitText = function(text) {
   this.buffer.add(text.text);
 }
 HtmlRenderer.prototype.visitElementBefore = function(element) {
-  if (!this.buffer.isEmpty() && const$0017.firstMatch(element.tag) != null) {
+  if (!this.buffer.isEmpty() && const$0019.firstMatch(element.tag) != null) {
     this.buffer.add("\n");
   }
   this.buffer.add(("<" + element.tag));
@@ -4851,6 +5144,16 @@ function hide(selector) {
 function isHidden(selector) {
   return get$$document().query(selector).get$classes().contains("hide");
 }
+function resizeSlide() {
+  get$$document().get$body().get$rect().then((function (bodyRect) {
+    var scale = (1.0) / Math.max(bodyRect.client.width / get$$window().innerWidth, bodyRect.client.height / get$$window().innerHeight);
+    get$$document().get$body().style.set$transform(("scale(" + scale + ")"));
+  })
+  );
+}
+function resizeSlideHandler(e) {
+  resizeSlide();
+}
 function buildSlides(text) {
   var sb = new StringBufferImpl("");
   markdownToHtml(text).split_("<hr />").forEach((function (slide) {
@@ -4874,6 +5177,7 @@ function handleKeysInSlideMode(event) {
         selectedSlide.get$classes().remove("selected-slide");
         selectedSlide.get$nextElementSibling().get$classes().add("selected-slide");
       }
+      event.preventDefault();
       break;
 
     case (37):
@@ -4882,35 +5186,44 @@ function handleKeysInSlideMode(event) {
         selectedSlide.get$classes().remove("selected-slide");
         selectedSlide.get$previousElementSibling().get$classes().add("selected-slide");
       }
+      event.preventDefault();
       break;
 
     case (27):
 
       toggleEditMode();
+      event.preventDefault();
       break;
 
   }
-  event.preventDefault();
 }
 function toggleEditMode() {
+  get$$document().get$body().style.set$transform("");
   show("#edit_mode, #editor_zone");
   hide("#slide_mode");
+  get$$document().query("#controls").style.set$position("");
   get$$document().query("#slides_container").get$classes().add("preview_edit_mode");
   get$$document().get$body().get$classes().remove("full");
   if (get$$document().query(".selected-slide") != null) {
     get$$document().query(".selected-slide").get$classes().remove("selected-slide");
   }
   get$$document().get$on().get$keyDown().remove(handleKeysInSlideMode, false);
+  get$$document().get$window().get$on().get$resize().remove(resizeSlideHandler, false);
 }
 function toggleSlideMode() {
   hide("#edit_mode, #editor_zone");
   show("#slide_mode");
+  var controlsStyle = get$$document().query("#controls").style;
+  controlsStyle.set$position("absolute");
+  controlsStyle.set$left("10px");
   get$$document().query("#slides_container").get$classes().remove("preview_edit_mode");
   get$$document().get$body().get$classes().add("full");
   if (get$$document().query(".slide-container") != null) {
     get$$document().queryAll(".slide-container").get$first().get$classes().add("selected-slide");
   }
   get$$document().get$on().get$keyDown().add(handleKeysInSlideMode, false);
+  get$$document().get$window().get$on().get$resize().add(resizeSlideHandler, false);
+  resizeSlide();
 }
 function prepareGui() {
   var showHideButton = get$$document().query("#show_hide_preview_button");
@@ -5004,25 +5317,27 @@ function $dynamicSetMetadata(inputTable) {
 })();
 //  ********** Globals **************
 function $static_init(){
+  $globals._firstMeasurementRequest = true;
+  $globals._nextMeasurementFrameScheduled = false;
 }
 var const$0000 = Object.create(_DeletedKeySentinel.prototype, {});
 var const$0001 = Object.create(NoMoreElementsException.prototype, {});
 var const$0002 = Object.create(EmptyQueueException.prototype, {});
 var const$0003 = Object.create(UnsupportedOperationException.prototype, {_message: {"value": "", writeable: false}});
-var const$0004 = new JSSyntaxRegExp("^[ ]{0,3}>[ ]?(.*)$");
-var const$0005 = new JSSyntaxRegExp("^[ ]{0,3}[*+-][ \\t]+(.*)$");
-var const$0006 = new JSSyntaxRegExp("^(?:    |\\t)(.*)$");
-var const$0007 = new JSSyntaxRegExp("^[ ]{0,3}\\d+\\.[ \\t]+(.*)$");
-var const$0008 = new JSSyntaxRegExp("^(#{1,6})(.*?)#*$");
-var const$0009 = new JSSyntaxRegExp("^<[ ]*\\w+[ >]");
-var const$0010 = new JSSyntaxRegExp("^[ ]{0,3}((-+[ ]{0,2}){3,}|(_+[ ]{0,2}){3,}|(\\*+[ ]{0,2}){3,})$");
-var const$0011 = new JSSyntaxRegExp("^([ \\t]*)$");
-var const$0012 = new JSSyntaxRegExp("^((=+)|(-+))$");
-var const$0013 = Object.create(NotImplementedException.prototype, {});
-var const$0014 = Object.create(IllegalAccessException.prototype, {});
-var const$0015 = _constMap([]);
-var const$0017 = new JSSyntaxRegExp("blockquote|h1|h2|h3|h4|h5|h6|hr|p|pre");
-var const$0016 = ImmutableList.ImmutableList$from$factory([const$0004, const$0008, const$0010, const$0006, const$0005, const$0007]);
+var const$0006 = new JSSyntaxRegExp("^[ ]{0,3}>[ ]?(.*)$");
+var const$0007 = new JSSyntaxRegExp("^[ ]{0,3}[*+-][ \\t]+(.*)$");
+var const$0008 = new JSSyntaxRegExp("^(?:    |\\t)(.*)$");
+var const$0009 = new JSSyntaxRegExp("^[ ]{0,3}\\d+\\.[ \\t]+(.*)$");
+var const$0010 = new JSSyntaxRegExp("^(#{1,6})(.*?)#*$");
+var const$0011 = new JSSyntaxRegExp("^<[ ]*\\w+[ >]");
+var const$0012 = new JSSyntaxRegExp("^[ ]{0,3}((-+[ ]{0,2}){3,}|(_+[ ]{0,2}){3,}|(\\*+[ ]{0,2}){3,})$");
+var const$0013 = new JSSyntaxRegExp("^([ \\t]*)$");
+var const$0014 = new JSSyntaxRegExp("^((=+)|(-+))$");
+var const$0015 = Object.create(NotImplementedException.prototype, {});
+var const$0016 = Object.create(IllegalAccessException.prototype, {});
+var const$0017 = _constMap([]);
+var const$0019 = new JSSyntaxRegExp("blockquote|h1|h2|h3|h4|h5|h6|hr|p|pre");
+var const$0018 = ImmutableList.ImmutableList$from$factory([const$0006, const$0010, const$0012, const$0008, const$0007, const$0009]);
 var $globals = {};
 $static_init();
 main();

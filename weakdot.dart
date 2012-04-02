@@ -16,7 +16,22 @@ bool isHidden(String selector) {
 }
 /* ------------ */
 
+void resizeSlide() {
+  
+  //rect return a future. see https://groups.google.com/a/dartlang.org/group/misc/browse_thread/thread/5587b66fe0d00bc5
+  document.body.rect.then((ElementRect bodyRect) {
+    final scale = 1.0 / Math.max(bodyRect.client.width/window.innerWidth, bodyRect.client.height/window.innerHeight);
+    
+    document.body.style.transform = 'scale(${scale})'; //CHECK don't work with IE9
+  });
+}
 
+
+void resizeSlideHandler(Event e) {
+  resizeSlide();
+}
+
+/* ------------ */
 
 String buildSlides(String text) {
   final StringBuffer sb = new StringBuffer();
@@ -44,23 +59,30 @@ void handleKeysInSlideMode (KeyboardEvent event) {
       selectedSlide.classes.remove('selected-slide');
       selectedSlide.nextElementSibling.classes.add('selected-slide');
     }
+    event.preventDefault();
     break;
   case 37: //left
     if (selectedSlide.previousElementSibling != null) {
       selectedSlide.classes.remove('selected-slide');
       selectedSlide.previousElementSibling.classes.add('selected-slide');
     }
+    event.preventDefault();
     break;
   case 27: //esc 
-    toggleEditMode(); 
+    toggleEditMode();
+    event.preventDefault();
     break;
   }
-  event.preventDefault();
 }
 
 void toggleEditMode() {
+  
+  document.body.style.transform = ''; //
+  
   show('#edit_mode, #editor_zone');
   hide('#slide_mode');
+  
+  document.query("#controls").style.position = '';
   
   document.query('#slides_container').classes.add('preview_edit_mode');
   document.body.classes.remove('full');
@@ -70,12 +92,17 @@ void toggleEditMode() {
   }
   
   document.on.keyDown.remove(handleKeysInSlideMode);
+  document.window.on.resize.remove(resizeSlideHandler);
 }
 
 
 void toggleSlideMode() {
   hide('#edit_mode, #editor_zone');
   show('#slide_mode');
+  
+  final CSSStyleDeclaration controlsStyle = document.query("#controls").style;
+  controlsStyle.position = 'absolute';
+  controlsStyle.left = '10px';
 
   document.query('#slides_container').classes.remove('preview_edit_mode');
   document.body.classes.add('full');
@@ -85,6 +112,9 @@ void toggleSlideMode() {
   }
   
   document.on.keyDown.add(handleKeysInSlideMode);
+  document.window.on.resize.add(resizeSlideHandler);
+  
+  resizeSlide();
 }
 
 void prepareGui() {

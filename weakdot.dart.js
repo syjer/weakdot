@@ -4836,6 +4836,21 @@ function renderToHtml(nodes) {
 }
 //  ********** Library C:\Users\sylvain-user\dart\weakdot\weakdot **************
 // ********** Code for top level **************
+function show(selector) {
+  get$$document().queryAll(selector).forEach((function (elem) {
+    return elem.get$classes().remove("hide");
+  })
+  );
+}
+function hide(selector) {
+  get$$document().queryAll(selector).forEach((function (elem) {
+    return elem.get$classes().add("hide");
+  })
+  );
+}
+function isHidden(selector) {
+  return get$$document().query(selector).get$classes().contains("hide");
+}
 function buildSlides(text) {
   var sb = new StringBufferImpl("");
   markdownToHtml(text).split_("<hr />").forEach((function (slide) {
@@ -4878,9 +4893,8 @@ function handleKeysInSlideMode(event) {
   event.preventDefault();
 }
 function toggleEditMode() {
-  get$$document().query("#edit_mode").get$classes().remove("hide");
-  get$$document().query("#editor_zone").get$classes().remove("hide");
-  get$$document().query("#slide_mode").get$classes().add("hide");
+  show("#edit_mode, #editor_zone");
+  hide("#slide_mode");
   get$$document().query("#slides_container").get$classes().add("preview_edit_mode");
   get$$document().get$body().get$classes().remove("full");
   if (get$$document().query(".selected-slide") != null) {
@@ -4889,9 +4903,8 @@ function toggleEditMode() {
   get$$document().get$on().get$keyDown().remove(handleKeysInSlideMode, false);
 }
 function toggleSlideMode() {
-  get$$document().query("#edit_mode").get$classes().add("hide");
-  get$$document().query("#editor_zone").get$classes().add("hide");
-  get$$document().query("#slide_mode").get$classes().remove("hide");
+  hide("#edit_mode, #editor_zone");
+  show("#slide_mode");
   get$$document().query("#slides_container").get$classes().remove("preview_edit_mode");
   get$$document().get$body().get$classes().add("full");
   if (get$$document().query(".slide-container") != null) {
@@ -4899,16 +4912,15 @@ function toggleSlideMode() {
   }
   get$$document().get$on().get$keyDown().add(handleKeysInSlideMode, false);
 }
-function main() {
+function prepareGui() {
   var showHideButton = get$$document().query("#show_hide_preview_button");
   showHideButton.get$on().get$click().add$1((function (e) {
-    var slides_container = get$$document().query("#slides_container");
-    if (slides_container.get$classes().contains("hide")) {
-      slides_container.get$classes().remove("hide");
+    if (isHidden("#slides_container")) {
+      show("#slides_container");
       showHideButton.set$text("hide preview");
     }
     else {
-      slides_container.get$classes().add("hide");
+      hide("#slides_container");
       showHideButton.set$text("show preview");
     }
   })
@@ -4925,6 +4937,9 @@ function main() {
     return updateSlides();
   })
   , false);
+}
+function main() {
+  prepareGui();
   toggleEditMode();
   updateSlides();
 }

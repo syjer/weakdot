@@ -2,6 +2,21 @@
 #import('markdown/lib.dart', prefix: 'markdown');
 
 
+/* the use of a hide class is a temporary workaround*/
+void show(String selector) {
+  document.queryAll(selector).forEach((Element elem) => elem.classes.remove('hide') );
+}
+
+void hide(String selector) {
+  document.queryAll(selector).forEach((Element elem) => elem.classes.add('hide') );
+}
+
+bool isHidden(String selector) {
+  return document.query(selector).classes.contains('hide');
+}
+/* ------------ */
+
+
 
 String buildSlides(String text) {
   final StringBuffer sb = new StringBuffer();
@@ -17,12 +32,12 @@ String buildSlides(String text) {
 }
 
 void updateSlides() {
-  final slides = buildSlides(document.query("#text").value);
-  document.query("#slides_container").innerHTML = slides;
+  final slides = buildSlides(document.query('#text').value);
+  document.query('#slides_container').innerHTML = slides;
 }
 
 void handleKeysInSlideMode (KeyboardEvent event) {
-  final Element selectedSlide = document.query(".selected-slide");
+  final Element selectedSlide = document.query('.selected-slide');
   switch(event.keyCode) {
   case 39: //right
     if (selectedSlide.nextElementSibling != null) {
@@ -44,16 +59,14 @@ void handleKeysInSlideMode (KeyboardEvent event) {
 }
 
 void toggleEditMode() {
-  document.query("#edit_mode").classes.remove('hide');
-  document.query("#editor_zone").classes.remove('hide');
-  document.query("#slide_mode").classes.add('hide');
+  show('#edit_mode, #editor_zone');
+  hide('#slide_mode');
   
+  document.query('#slides_container').classes.add('preview_edit_mode');
+  document.body.classes.remove('full');
   
-  document.query("#slides_container").classes.add("preview_edit_mode");
-  document.body.classes.remove("full");
-  
-  if (document.query(".selected-slide") != null) {
-    document.query(".selected-slide").classes.remove('selected-slide');
+  if (document.query('.selected-slide') != null) {
+    document.query('.selected-slide').classes.remove('selected-slide');
   }
   
   document.on.keyDown.remove(handleKeysInSlideMode);
@@ -61,46 +74,40 @@ void toggleEditMode() {
 
 
 void toggleSlideMode() {
-  document.query("#edit_mode").classes.add('hide');
-  document.query("#editor_zone").classes.add('hide');
-  document.query("#slide_mode").classes.remove('hide');
+  hide('#edit_mode, #editor_zone');
+  show('#slide_mode');
 
-  document.query("#slides_container").classes.remove("preview_edit_mode");
-  document.body.classes.add("full");
+  document.query('#slides_container').classes.remove('preview_edit_mode');
+  document.body.classes.add('full');
   
-  if (document.query(".slide-container") != null) {
-    document.queryAll(".slide-container").first.classes.add('selected-slide');
+  if (document.query('.slide-container') != null) {
+    document.queryAll('.slide-container').first.classes.add('selected-slide');
   }
-  
   
   document.on.keyDown.add(handleKeysInSlideMode);
 }
 
-void main() {
+void prepareGui() {
   
-  final showHideButton = document.query("#show_hide_preview_button");
+  final showHideButton = document.query('#show_hide_preview_button');
   
   showHideButton.on.click.add((e) {
-    
-    final Element slides_container = document.query("#slides_container");
-    
-    if (slides_container.classes.contains('hide')) {
-      slides_container.classes.remove('hide');
+    if (isHidden('#slides_container')) {
+      show('#slides_container');
       showHideButton.text = 'hide preview';
     } else {
-      slides_container.classes.add('hide');
+      hide('#slides_container');
       showHideButton.text = 'show preview';
     }
   });
   
-  
-  document.query("#toggle_slide_mode_button").on.click.add((e) => toggleSlideMode());
-  document.query("#toggle_edit_mode_button").on.click.add((e) => toggleEditMode());
-  
-  document.query("#text").on.keyUp.add((e)=> updateSlides());
-  
-  //
+  document.query('#toggle_slide_mode_button').on.click.add((e) => toggleSlideMode());
+  document.query('#toggle_edit_mode_button').on.click.add((e) => toggleEditMode());
+  document.query('#text').on.keyUp.add((e)=> updateSlides());
+}
+
+void main() {
+  prepareGui();
   toggleEditMode();
   updateSlides();
-  
 }

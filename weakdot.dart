@@ -1,4 +1,5 @@
 #import('dart:html');
+#import('dart:json');
 #import('markdown/lib.dart', prefix: 'markdown');
 
 
@@ -17,7 +18,6 @@ bool isHidden(String selector) {
 /* ------------ */
 
 void resizeSlide() {
-  
   //rect return a future. see https://groups.google.com/a/dartlang.org/group/misc/browse_thread/thread/5587b66fe0d00bc5
   document.body.rect.then((ElementRect bodyRect) {
     final scale = 1.0 / Math.max(bodyRect.client.width/window.innerWidth, bodyRect.client.height/window.innerHeight);
@@ -29,6 +29,34 @@ void resizeSlide() {
 
 void resizeSlideHandler(Event e) {
   resizeSlide();
+}
+
+/* ------------ */
+
+//TODO: add a listener/observer system for updating the GUI ?
+class WeakDotStorage {
+  
+  List<String> listSlideNames() {
+    final String slideNames = window.localStorage.getItem("SLIDE_NAMES");
+    return slideNames != null ? JSON.parse(slideNames) : [];
+  }
+  
+  void save(String name, String slide) {
+    name = name.trim();
+    window.console.log("saving ${name}");
+    Set<String> slideNames = new Set<String>.from(listSlideNames());
+    slideNames.add(name);
+    window.localStorage.setItem("SLIDE_NAMES", JSON.stringify(new List<String>.from(slideNames)));
+    window.localStorage.setItem(name, slide);
+  }
+  
+  String loadSlide(String name) {
+    return window.localStorage.getItem(name);
+  }
+  
+  void clear() {
+    window.localStorage.clear();
+  }
 }
 
 /* ------------ */
@@ -117,7 +145,47 @@ void toggleSlideMode() {
   resizeSlide();
 }
 
-void prepareGui() {
+void updateListSlideNames(WeakDotStorage storage) {
+  final Element slideSelect = document.query("#slide_list");
+  slideSelect.nodes.clear();
+  storage.listSlideNames().forEach((slideName) {
+    final Element slideNameElement = new Element.html('<option value="${slideName}">${slideName}</option>');
+    slideSelect.nodes.add(slideNameElement);
+  });
+}
+
+void saveCurrentSlide(WeakDotStorage storage) {
+  final String slideTitle = document.query("#slide_title").value;
+  final String slide = document.query("#text").value;
+  storage.save(slideTitle, slide);
+}
+
+void prepareGui(WeakDotStorage storage) {
+  
+  //on select slide.
+  final Element slideSelect = document.query("#slide_list");
+  slideSelect.on.change.add((Event e) {
+    
+    //
+    saveCurrentSlide(storage);
+    //
+    final String slideName = slideSelect.value;
+    document.query("#slide_title").value = slideName;
+    document.query("#text").value = storage.loadSlide(slideName);
+    //
+    updateSlides();
+  });
+  //
+  updateListSlideNames(storage);
+  //
+  
+  //
+  document.query("#save_slide").on.click.add((e) {
+    saveCurrentSlide(storage);
+    updateListSlideNames(storage);
+  });
+  //
+  
   
   final showHideButton = document.query('#show_hide_preview_button');
   
@@ -134,10 +202,63 @@ void prepareGui() {
   document.query('#toggle_slide_mode_button').on.click.add((e) => toggleSlideMode());
   document.query('#toggle_edit_mode_button').on.click.add((e) => toggleEditMode());
   document.query('#text').on.keyUp.add((e)=> updateSlides());
+  
+  
+  document.query("#clear_storage").on.click.add((e) {
+    if(window.confirm("are you sure to clear all?")) {
+      storage.clear();
+      updateListSlideNames(storage);
+    }
+  });
+  
+  document.query("#load_template").on.click.add((e) => loadTemplate());
 }
 
 void main() {
-  prepareGui();
+  
+  final WeakDotStorage storage = new WeakDotStorage();
+  
+  prepareGui(storage);
   toggleEditMode();
   updateSlides();
 }
+
+
+// template part
+void loadTemplate() {
+  final String template = '''#slide title
+
+  some text. _em_ and __strong__.
+
+  or *em* and **strong**.
+
+  Add 3 dash for creating a new slide
+
+  ---
+  #a slide appear! (with list)
+
+  - one
+  - two 
+  - three
+
+  inline  html work too:
+
+  <ol>
+   <li>test
+   <li>test2
+  </ol>
+
+  ---
+  #quoting
+
+  > test sdfa f asd sf a
+  > dsfasfds sf
+  > fdsfasfd
+  >> test
+  > a''';
+
+  document.query('#text').value = template;
+  updateSlides();
+}
+
+

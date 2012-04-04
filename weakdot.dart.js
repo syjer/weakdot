@@ -122,6 +122,9 @@ $defProp(Object.prototype, "is$List", function() {
 $defProp(Object.prototype, "is$Map", function() {
   return false;
 });
+$defProp(Object.prototype, "is$Map_dart_core_String$Dynamic", function() {
+  return false;
+});
 $defProp(Object.prototype, "is$RegExp", function() {
   return false;
 });
@@ -459,25 +462,25 @@ ImmutableList.prototype.get$length = function() {
   return this.length;
 }
 ImmutableList.prototype.set$length = function(length) {
-  $throw(const$0016);
+  $throw(const$0014);
 }
 ImmutableList.prototype.$setindex = function(index, value) {
-  $throw(const$0016);
+  $throw(const$0014);
 }
 ImmutableList.prototype.removeRange = function(start, length) {
-  $throw(const$0016);
+  $throw(const$0014);
 }
 ImmutableList.prototype.add = function(element) {
-  $throw(const$0016);
+  $throw(const$0014);
 }
 ImmutableList.prototype.addAll = function(elements) {
-  $throw(const$0016);
+  $throw(const$0014);
 }
 ImmutableList.prototype.clear = function() {
-  $throw(const$0016);
+  $throw(const$0014);
 }
 ImmutableList.prototype.removeLast = function() {
-  $throw(const$0016);
+  $throw(const$0014);
 }
 ImmutableList.prototype.toString = function() {
   return Collections.collectionToString(this);
@@ -489,6 +492,7 @@ function ImmutableMap(keyValuePairs) {
   this._internal = _map(keyValuePairs);
 }
 ImmutableMap.prototype.is$Map = function(){return true};
+ImmutableMap.prototype.is$Map_dart_core_String$Dynamic = function(){return true};
 ImmutableMap.prototype.$index = function(key) {
   return this._internal.$index(key);
 }
@@ -505,10 +509,10 @@ ImmutableMap.prototype.containsKey = function(key) {
   return this._internal.containsKey(key);
 }
 ImmutableMap.prototype.$setindex = function(key, value) {
-  $throw(const$0016);
+  $throw(const$0014);
 }
 ImmutableMap.prototype.clear = function() {
-  $throw(const$0016);
+  $throw(const$0014);
 }
 ImmutableMap.prototype.toString = function() {
   return Maps.mapToString(this);
@@ -558,6 +562,9 @@ MatchImplementation.prototype.start = function() {
 }
 MatchImplementation.prototype.end = function() {
   return this._end;
+}
+MatchImplementation.prototype.group = function(group) {
+  return this._groups.$index(group);
 }
 MatchImplementation.prototype.$index = function(group) {
   return this._groups.$index(group);
@@ -758,6 +765,7 @@ function HashMapImplementation() {
   this._values = new Array((8));
 }
 HashMapImplementation.prototype.is$Map = function(){return true};
+HashMapImplementation.prototype.is$Map_dart_core_String$Dynamic = function(){return true};
 HashMapImplementation._computeLoadLimit = function(capacity) {
   return $truncdiv$((capacity * (3)), (4));
 }
@@ -910,6 +918,7 @@ function HashMapImplementation_Dynamic$DoubleLinkedQueueEntry_KeyValuePair() {
   this._values = new Array((8));
 }
 HashMapImplementation_Dynamic$DoubleLinkedQueueEntry_KeyValuePair.prototype.is$Map = function(){return true};
+HashMapImplementation_Dynamic$DoubleLinkedQueueEntry_KeyValuePair.prototype.is$Map_dart_core_String$Dynamic = function(){return true};
 // ********** Code for HashMapImplementation_dart_core_String$dart_core_String **************
 $inherits(HashMapImplementation_dart_core_String$dart_core_String, HashMapImplementation);
 function HashMapImplementation_dart_core_String$dart_core_String() {
@@ -920,11 +929,20 @@ function HashMapImplementation_dart_core_String$dart_core_String() {
   this._values = new Array((8));
 }
 HashMapImplementation_dart_core_String$dart_core_String.prototype.is$Map = function(){return true};
+HashMapImplementation_dart_core_String$dart_core_String.prototype.is$Map_dart_core_String$Dynamic = function(){return true};
 // ********** Code for HashSetImplementation **************
 function HashSetImplementation() {
   this._backingMap = new HashMapImplementation();
 }
 HashSetImplementation.prototype.is$Collection = function(){return true};
+HashSetImplementation.HashSetImplementation$from$factory = function(other) {
+  var set = new HashSetImplementation();
+  for (var $$i = other.iterator(); $$i.hasNext(); ) {
+    var e = $$i.next();
+    set.add(e);
+  }
+  return set;
+}
 HashSetImplementation.prototype.clear = function() {
   this._backingMap.clear();
 }
@@ -1030,6 +1048,7 @@ function LinkedHashMapImplementation() {
   this._list = new DoubleLinkedQueue_KeyValuePair();
 }
 LinkedHashMapImplementation.prototype.is$Map = function(){return true};
+LinkedHashMapImplementation.prototype.is$Map_dart_core_String$Dynamic = function(){return true};
 LinkedHashMapImplementation.prototype.$setindex = function(key, value) {
   if (this._map.containsKey(key)) {
     this._map.$index(key).get$element().set$value(value);
@@ -1831,6 +1850,9 @@ $inherits(_ElementEventsImpl, _EventsImpl);
 function _ElementEventsImpl(_ptr) {
   _EventsImpl.call(this, _ptr);
 }
+_ElementEventsImpl.prototype.get$change = function() {
+  return this._get("change");
+}
 _ElementEventsImpl.prototype.get$click = function() {
   return this._get("click");
 }
@@ -2061,6 +2083,9 @@ $inherits(_DocumentEventsImpl, _ElementEventsImpl);
 function _DocumentEventsImpl(_ptr) {
   _ElementEventsImpl.call(this, _ptr);
 }
+_DocumentEventsImpl.prototype.get$change = function() {
+  return this._get("change");
+}
 _DocumentEventsImpl.prototype.get$click = function() {
   return this._get("click");
 }
@@ -2184,7 +2209,7 @@ $dynamic("get$parent").DocumentFragment = function() {
   return null;
 }
 $dynamic("get$attributes").DocumentFragment = function() {
-  return const$0017;
+  return const$0015;
 }
 $dynamic("get$classes").DocumentFragment = function() {
   return new HashSetImplementation_dart_core_String();
@@ -2278,7 +2303,7 @@ _ChildrenElementList.prototype.addAll = function(collection) {
   }
 }
 _ChildrenElementList.prototype.removeRange = function(start, length) {
-  $throw(const$0015);
+  $throw(const$0013);
 }
 _ChildrenElementList.prototype.getRange = function(start, length) {
   return new _FrozenElementList._wrap$ctor(_Lists.getRange(this, start, length, []));
@@ -2483,6 +2508,7 @@ ElementAttributeMap._wrap$ctor = function(_element) {
 ElementAttributeMap._wrap$ctor.prototype = ElementAttributeMap.prototype;
 function ElementAttributeMap() {}
 ElementAttributeMap.prototype.is$Map = function(){return true};
+ElementAttributeMap.prototype.is$Map_dart_core_String$Dynamic = function(){return true};
 ElementAttributeMap.prototype.containsKey = function(key) {
   return this._html_element._hasAttribute(key);
 }
@@ -3495,6 +3521,9 @@ $inherits(_SVGElementInstanceEventsImpl, _EventsImpl);
 function _SVGElementInstanceEventsImpl(_ptr) {
   _EventsImpl.call(this, _ptr);
 }
+_SVGElementInstanceEventsImpl.prototype.get$change = function() {
+  return this._get("change");
+}
 _SVGElementInstanceEventsImpl.prototype.get$click = function() {
   return this._get("click");
 }
@@ -4109,6 +4138,9 @@ $inherits(_WindowEventsImpl, _EventsImpl);
 function _WindowEventsImpl(_ptr) {
   _EventsImpl.call(this, _ptr);
 }
+_WindowEventsImpl.prototype.get$change = function() {
+  return this._get("change");
+}
 _WindowEventsImpl.prototype.get$click = function() {
   return this._get("click");
 }
@@ -4205,6 +4237,31 @@ _MeasurementRequest.prototype.get$value = function() { return this.value; };
 _MeasurementRequest.prototype.set$value = function(value) { return this.value = value; };
 // ********** Code for _ElementFactoryProvider **************
 function _ElementFactoryProvider() {}
+_ElementFactoryProvider.Element$html$factory = function(html) {
+  var parentTag = "div";
+  var tag;
+  var match = const$0018.firstMatch(html);
+  if (null != match) {
+    tag = match.group((1)).toLowerCase();
+    if (const$0019.containsKey(tag)) {
+      parentTag = const$0019.$index(tag);
+    }
+  }
+  var temp = _ElementFactoryProvider.Element$tag$factory(parentTag);
+  temp.set$innerHTML(html);
+  var element;
+  if (temp.get$elements().get$length() == (1)) {
+    element = temp.get$elements().get$first();
+  }
+  else if (parentTag == "html" && temp.get$elements().get$length() == (2)) {
+    element = temp.get$elements().$index(tag == "head" ? (0) : (1));
+  }
+  else {
+    $throw(new IllegalArgumentException($add$(("HTML had " + temp.get$elements().get$length() + " "), "top level elements but 1 expected")));
+  }
+  element.remove();
+  return element;
+}
 _ElementFactoryProvider.Element$tag$factory = function(tag) {
   return get$$_document()._createElement(tag);
 }
@@ -4438,6 +4495,56 @@ function _completeMeasurementFutures() {
     }
   }
 }
+//  ********** Library json **************
+// ********** Code for _JSON **************
+_JSON = JSON;
+// ********** Code for json_JSON **************
+function json_JSON() {}
+json_JSON.parse = function(str) {
+  return _JSON.parse(str, (function (_, obj) {
+    var keys = _jsKeys(obj);
+    if ($eq$(keys)) return obj;
+    var map = new HashMapImplementation();
+    for (var $$i = keys.iterator(); $$i.hasNext(); ) {
+      var key = $$i.next();
+      map.$setindex(key, _getValue(obj, key));
+    }
+    return map;
+  })
+  );
+}
+json_JSON.stringify = function(value) {
+  return _JSON.stringify(value, (function (_, obj) {
+    if (_directToJson(obj)) return obj;
+    if (!!(obj && obj.is$Map_dart_core_String$Dynamic())) {
+      var map = obj;
+      obj = new Object();
+      map.forEach((function (k, v) {
+        return _setValue(obj, k, v);
+      })
+      );
+      return obj;
+    }
+    $throw(new IllegalArgumentException(("cannot convert \"" + value + "\" to JSON")));
+  })
+  );
+}
+// ********** Code for top level **************
+function _getValue(obj, key) {
+  return obj[key]
+}
+function _setValue(obj, key, value) {
+  obj[key] = value
+}
+function _directToJson(obj) {
+  return typeof obj != 'object' || obj == null || obj instanceof Array
+}
+function _jsKeys(obj) {
+  if (obj != null && typeof obj == 'object' && !(obj instanceof Array)) {
+  return Object.keys(obj);
+  }
+  return null;
+}
 //  ********** Library markdown **************
 // ********** Code for markdown_Document **************
 function markdown_Document() {
@@ -4609,7 +4716,7 @@ function EmptyBlockSyntax() {
   BlockSyntax.call(this);
 }
 EmptyBlockSyntax.prototype.get$pattern = function() {
-  return const$0013;
+  return const$0011;
 }
 EmptyBlockSyntax.prototype.parse = function(parser) {
   parser.advance();
@@ -4622,10 +4729,10 @@ function SetextHeaderSyntax() {
   BlockSyntax.call(this);
 }
 SetextHeaderSyntax.prototype.canParse = function(parser) {
-  return parser.matchesNext(const$0014);
+  return parser.matchesNext(const$0012);
 }
 SetextHeaderSyntax.prototype.parse = function(parser) {
-  var match = const$0014.firstMatch(parser.get$next());
+  var match = const$0012.firstMatch(parser.get$next());
   var tag = ($eq$(match.$index((1)).$index((0)), "=")) ? "h1" : "h2";
   var contents = parser.document.parseInline(parser.get$current());
   parser.advance();
@@ -4639,7 +4746,7 @@ function HeaderSyntax() {
   BlockSyntax.call(this);
 }
 HeaderSyntax.prototype.get$pattern = function() {
-  return const$0010;
+  return const$0008;
 }
 HeaderSyntax.prototype.parse = function(parser) {
   var match = this.get$pattern().firstMatch(parser.get$current());
@@ -4655,7 +4762,7 @@ function BlockquoteSyntax() {
   BlockSyntax.call(this);
 }
 BlockquoteSyntax.prototype.get$pattern = function() {
-  return const$0006;
+  return const$0004;
 }
 BlockquoteSyntax.prototype.parse = function(parser) {
   var childLines = this.parseChildLines(parser);
@@ -4669,7 +4776,7 @@ function CodeBlockSyntax() {
   BlockSyntax.call(this);
 }
 CodeBlockSyntax.prototype.get$pattern = function() {
-  return const$0008;
+  return const$0006;
 }
 CodeBlockSyntax.prototype.parse = function(parser) {
   var childLines = this.parseChildLines(parser);
@@ -4684,7 +4791,7 @@ function HorizontalRuleSyntax() {
   BlockSyntax.call(this);
 }
 HorizontalRuleSyntax.prototype.get$pattern = function() {
-  return const$0012;
+  return const$0010;
 }
 HorizontalRuleSyntax.prototype.parse = function(parser) {
   var match = this.get$pattern().firstMatch(parser.get$current());
@@ -4698,14 +4805,14 @@ function BlockHtmlSyntax() {
   BlockSyntax.call(this);
 }
 BlockHtmlSyntax.prototype.get$pattern = function() {
-  return const$0011;
+  return const$0009;
 }
 BlockHtmlSyntax.prototype.get$canEndBlock = function() {
   return false;
 }
 BlockHtmlSyntax.prototype.parse = function(parser) {
   var childLines = [];
-  while (!parser.get$isDone() && !parser.matches(const$0013)) {
+  while (!parser.get$isDone() && !parser.matches(const$0011)) {
     childLines.add$1(parser.get$current());
     parser.advance();
   }
@@ -4744,14 +4851,14 @@ ListSyntax.prototype.parse = function(parser) {
   }
   var afterEmpty = false;
   while (!parser.get$isDone()) {
-    if (tryMatch(const$0013)) {
+    if (tryMatch(const$0011)) {
       childLines.add$1("");
     }
-    else if (tryMatch(const$0007) || tryMatch(const$0009)) {
+    else if (tryMatch(const$0005) || tryMatch(const$0007)) {
       endItem();
       childLines.add$1(match.$index((1)));
     }
-    else if (tryMatch(const$0008)) {
+    else if (tryMatch(const$0006)) {
       childLines.add$1(match.$index((1)));
     }
     else if (BlockSyntax.isAtBlockEnd(parser)) {
@@ -4768,7 +4875,7 @@ ListSyntax.prototype.parse = function(parser) {
    i < items.get$length(); i++) {
     for (var j = items.$index(i).get$lines().get$length() - (1);
      j > (0); j--) {
-      if (const$0013.firstMatch(items.$index(i).get$lines().$index(j)) != null) {
+      if (const$0011.firstMatch(items.$index(i).get$lines().$index(j)) != null) {
         if (i < items.get$length() - (1)) {
           items.$index(i).set$forceBlock(true);
           items.$index(i + (1)).set$forceBlock(true);
@@ -4784,7 +4891,7 @@ ListSyntax.prototype.parse = function(parser) {
   for (var $$i = items.iterator(); $$i.hasNext(); ) {
     var item = $$i.next();
     var blockItem = item.get$forceBlock() || (item.get$lines().get$length() > (1));
-    var blocksInList = const$0018;
+    var blocksInList = const$0016;
     if (!blockItem) {
       for (var $i0 = blocksInList.iterator(); $i0.hasNext(); ) {
         var pattern = $i0.next();
@@ -4812,7 +4919,7 @@ function UnorderedListSyntax() {
   ListSyntax.call(this);
 }
 UnorderedListSyntax.prototype.get$pattern = function() {
-  return const$0007;
+  return const$0005;
 }
 UnorderedListSyntax.prototype.get$listTag = function() {
   return "ul";
@@ -4823,7 +4930,7 @@ function OrderedListSyntax() {
   ListSyntax.call(this);
 }
 OrderedListSyntax.prototype.get$pattern = function() {
-  return const$0009;
+  return const$0007;
 }
 OrderedListSyntax.prototype.get$listTag = function() {
   return "ol";
@@ -4865,7 +4972,7 @@ HtmlRenderer.prototype.visitText = function(text) {
   this.buffer.add(text.text);
 }
 HtmlRenderer.prototype.visitElementBefore = function(element) {
-  if (!this.buffer.isEmpty() && const$0019.firstMatch(element.tag) != null) {
+  if (!this.buffer.isEmpty() && const$0017.firstMatch(element.tag) != null) {
     this.buffer.add("\n");
   }
   this.buffer.add(("<" + element.tag));
@@ -5128,6 +5235,29 @@ function renderToHtml(nodes) {
   return new HtmlRenderer().render(nodes);
 }
 //  ********** Library C:\Users\sylvain-user\dart\weakdot\weakdot **************
+// ********** Code for WeakDotStorage **************
+function WeakDotStorage() {
+
+}
+WeakDotStorage.prototype.listSlideNames = function() {
+  var slideNames = get$$window().localStorage.getItem("SLIDE_NAMES");
+  return slideNames != null ? json_JSON.parse(slideNames) : [];
+}
+WeakDotStorage.prototype.save = function(name, slide) {
+  name = name.trim();
+  get$$window().console.log(("saving " + name));
+  var slideNames = HashSetImplementation.HashSetImplementation$from$factory(this.listSlideNames());
+  slideNames.add(name);
+  get$$window().localStorage.setItem("SLIDE_NAMES", json_JSON.stringify(ListFactory.ListFactory$from$factory(slideNames)));
+  get$$window().localStorage.setItem(name, slide);
+}
+WeakDotStorage.prototype.loadSlide = function(name) {
+  return get$$window().localStorage.getItem(name);
+}
+WeakDotStorage.prototype.clear = function() {
+  get$$window().localStorage.clear();
+}
+WeakDotStorage.prototype.clear$0 = WeakDotStorage.prototype.clear;
 // ********** Code for top level **************
 function show(selector) {
   get$$document().queryAll(selector).forEach((function (elem) {
@@ -5225,7 +5355,36 @@ function toggleSlideMode() {
   get$$document().get$window().get$on().get$resize().add(resizeSlideHandler, false);
   resizeSlide();
 }
-function prepareGui() {
+function updateListSlideNames(storage) {
+  var slideSelect = get$$document().query("#slide_list");
+  slideSelect.get$nodes().clear();
+  storage.listSlideNames().forEach((function (slideName) {
+    var slideNameElement = _ElementFactoryProvider.Element$html$factory(("<option value=\"" + slideName + "\">" + slideName + "</option>"));
+    slideSelect.get$nodes().add(slideNameElement);
+  })
+  );
+}
+function saveCurrentSlide(storage) {
+  var slideTitle = get$$document().query("#slide_title").get$value();
+  var slide = get$$document().query("#text").get$value();
+  storage.save(slideTitle, slide);
+}
+function prepareGui(storage) {
+  var slideSelect = get$$document().query("#slide_list");
+  slideSelect.get$on().get$change().add((function (e) {
+    saveCurrentSlide(storage);
+    var slideName = slideSelect.get$value();
+    get$$document().query("#slide_title").set$value(slideName);
+    get$$document().query("#text").set$value(storage.loadSlide(slideName));
+    updateSlides();
+  })
+  , false);
+  updateListSlideNames(storage);
+  get$$document().query("#save_slide").get$on().get$click().add$1((function (e) {
+    saveCurrentSlide(storage);
+    updateListSlideNames(storage);
+  })
+  );
   var showHideButton = get$$document().query("#show_hide_preview_button");
   showHideButton.get$on().get$click().add$1((function (e) {
     if (isHidden("#slides_container")) {
@@ -5250,10 +5409,27 @@ function prepareGui() {
     return updateSlides();
   })
   , false);
+  get$$document().query("#clear_storage").get$on().get$click().add$1((function (e) {
+    if (get$$window().confirm("are you sure to clear all?")) {
+      storage.clear();
+      updateListSlideNames(storage);
+    }
+  })
+  );
+  get$$document().query("#load_template").get$on().get$click().add$1((function (e) {
+    return loadTemplate();
+  })
+  );
 }
 function main() {
-  prepareGui();
+  var storage = new WeakDotStorage();
+  prepareGui(storage);
   toggleEditMode();
+  updateSlides();
+}
+function loadTemplate() {
+  var template = "#slide title\r\n\r\n  some text. _em_ and __strong__.\r\n\r\n  or *em* and **strong**.\r\n\r\n  Add 3 dash for creating a new slide\r\n\r\n  ---\r\n  #a slide appear! (with list)\r\n\r\n  - one\r\n  - two \r\n  - three\r\n\r\n  inline  html work too:\r\n\r\n  <ol>\r\n   <li>test\r\n   <li>test2\r\n  </ol>\r\n\r\n  ---\r\n  #quoting\r\n\r\n  > test sdfa f asd sf a\r\n  > dsfasfds sf\r\n  > fdsfasfd\r\n  >> test\r\n  > a";
+  get$$document().query("#text").set$value(template);
   updateSlides();
 }
 // 262 dynamic types.
@@ -5324,20 +5500,22 @@ var const$0000 = Object.create(_DeletedKeySentinel.prototype, {});
 var const$0001 = Object.create(NoMoreElementsException.prototype, {});
 var const$0002 = Object.create(EmptyQueueException.prototype, {});
 var const$0003 = Object.create(UnsupportedOperationException.prototype, {_message: {"value": "", writeable: false}});
-var const$0006 = new JSSyntaxRegExp("^[ ]{0,3}>[ ]?(.*)$");
-var const$0007 = new JSSyntaxRegExp("^[ ]{0,3}[*+-][ \\t]+(.*)$");
-var const$0008 = new JSSyntaxRegExp("^(?:    |\\t)(.*)$");
-var const$0009 = new JSSyntaxRegExp("^[ ]{0,3}\\d+\\.[ \\t]+(.*)$");
-var const$0010 = new JSSyntaxRegExp("^(#{1,6})(.*?)#*$");
-var const$0011 = new JSSyntaxRegExp("^<[ ]*\\w+[ >]");
-var const$0012 = new JSSyntaxRegExp("^[ ]{0,3}((-+[ ]{0,2}){3,}|(_+[ ]{0,2}){3,}|(\\*+[ ]{0,2}){3,})$");
-var const$0013 = new JSSyntaxRegExp("^([ \\t]*)$");
-var const$0014 = new JSSyntaxRegExp("^((=+)|(-+))$");
-var const$0015 = Object.create(NotImplementedException.prototype, {});
-var const$0016 = Object.create(IllegalAccessException.prototype, {});
-var const$0017 = _constMap([]);
-var const$0019 = new JSSyntaxRegExp("blockquote|h1|h2|h3|h4|h5|h6|hr|p|pre");
-var const$0018 = ImmutableList.ImmutableList$from$factory([const$0006, const$0010, const$0012, const$0008, const$0007, const$0009]);
+var const$0004 = new JSSyntaxRegExp("^[ ]{0,3}>[ ]?(.*)$");
+var const$0005 = new JSSyntaxRegExp("^[ ]{0,3}[*+-][ \\t]+(.*)$");
+var const$0006 = new JSSyntaxRegExp("^(?:    |\\t)(.*)$");
+var const$0007 = new JSSyntaxRegExp("^[ ]{0,3}\\d+\\.[ \\t]+(.*)$");
+var const$0008 = new JSSyntaxRegExp("^(#{1,6})(.*?)#*$");
+var const$0009 = new JSSyntaxRegExp("^<[ ]*\\w+[ >]");
+var const$0010 = new JSSyntaxRegExp("^[ ]{0,3}((-+[ ]{0,2}){3,}|(_+[ ]{0,2}){3,}|(\\*+[ ]{0,2}){3,})$");
+var const$0011 = new JSSyntaxRegExp("^([ \\t]*)$");
+var const$0012 = new JSSyntaxRegExp("^((=+)|(-+))$");
+var const$0013 = Object.create(NotImplementedException.prototype, {});
+var const$0014 = Object.create(IllegalAccessException.prototype, {});
+var const$0015 = _constMap([]);
+var const$0017 = new JSSyntaxRegExp("blockquote|h1|h2|h3|h4|h5|h6|hr|p|pre");
+var const$0018 = new JSSyntaxRegExp("<(\\w+)");
+var const$0019 = _constMap(["body", "html", "head", "html", "caption", "table", "td", "tr", "colgroup", "table", "col", "colgroup", "tr", "tbody", "tbody", "table", "tfoot", "table", "thead", "table", "track", "audio"]);
+var const$0016 = ImmutableList.ImmutableList$from$factory([const$0004, const$0008, const$0010, const$0006, const$0005, const$0007]);
 var $globals = {};
 $static_init();
 main();

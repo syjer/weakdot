@@ -54,7 +54,11 @@ table {
 body {  
 	counter-reset: preview_slide_page; 
 	font-family:sans-serif;
-} 
+}
+
+#edit_mode {
+	margin-left:10px;
+}
 
 .preview_edit_mode > div {
 	width:512px;

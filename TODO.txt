@@ -1,17 +1,15 @@
 TODO:
 -----
 0: isolate bug with IE: element.style.display = 'none'; generate an error.
- 
-2: localstorage (new slide, list slide in localstorage+load, save)
-3: export+load
+
+~~
+
+1: export+load
+2: organize the code.
+3: gui (still a battlefield...)
 
 
 misc links & stuff.
-
-see
-
-- http://dartwatch.com/index.php/2012/03/dartium-for-windows-binaries-now-available/
-
 
 For slides:
 

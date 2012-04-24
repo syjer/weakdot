@@ -85,6 +85,10 @@ body {
 	margin-bottom:85px;
 }
 
+.preview_edit_mode > div > div:hover {
+	box-shadow: 0 0 50px blue;
+}
+
 .preview_edit_mode section.slide {
 	transform: scale(0.5);
 	transform-origin: 0 0;

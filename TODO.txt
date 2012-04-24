@@ -1,6 +1,10 @@
 TODO:
 -----
+-1: see FIXME
 0: isolate bug with IE: element.style.display = 'none'; generate an error.
+
+- look at for organizing the code
+- https://github.com/sethladd/dart-mvc-playing-around
 
 ~~
 

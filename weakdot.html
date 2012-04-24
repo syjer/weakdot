@@ -3,6 +3,12 @@
   <head>
     <title>test</title>
     <link rel="stylesheet" type="text/css" href="weakdot.css" />
+    <script type="text/javascript">
+//http://blog.sethladd.com/2012/03/jsonp-with-dart.html see #2
+function callbackForJsonpApi(s) {
+  window.postMessage(JSON.stringify(s), '*');
+}
+</script>
   </head>
   <body>
   
@@ -23,8 +29,11 @@
   			<div id="editor_zone">
     			<textarea id="text"></textarea>
     			<div style="margin-top:20px">
-    				<button id="load_template">load template</button>
-    				<button id="clear_storage">clear all (spoiler alert: it clear the local storage).</button>
+    				<ul>
+    					<li><button id="load_template">load template</button></li>
+    					<li>load presentation from github <input type="text" id="github_url"> <button id="github_load">load</button></li>
+    					<li><button id="clear_storage">clear all (spoiler alert: it clear the local storage).</button></li>
+    				</ul>
     			</div>
     		</div>
     		<div id="slides_container" class="preview_edit_mode">&nbsp;</div>

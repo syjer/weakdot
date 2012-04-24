@@ -1,6 +1,6 @@
 #library('common');
 #import('dart:html');
-#import('../markdown/lib.dart', prefix: 'markdown');
+#import('../markdown/markdown.dart', prefix: 'markdown');
 
 class Observable {
   final List<Function> _observers;

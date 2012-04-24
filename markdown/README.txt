@@ -1,4 +1,3 @@
-A markdown parsing library in Dart.
+imported from dartdoc.
 
-If you want to use this as a library, import "lib.dart". To use it as a
-standalone script, run "markdown.dart".
+https://dart.googlecode.com/svn/trunk/dart/lib/dartdoc/

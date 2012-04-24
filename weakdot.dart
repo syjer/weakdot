@@ -3,6 +3,7 @@
 #import('weakdot/storage.dart');
 #import('weakdot/slides.dart');
 #import('weakdot/editor.dart');
+#import('weakdot/githubloader.dart');
 
 /* ------------ */
 
@@ -17,6 +18,8 @@ void updateListSlideNames(WeakDotStorage storage) {
 }
 
 void prepareGui(WeakDotStorage storage, Editor editor, Slides slides) {
+  
+  final GithubLoader githubLoader = new GithubLoader(editor);
   
   updateListSlideNames(storage);
   
@@ -71,6 +74,10 @@ void prepareGui(WeakDotStorage storage, Editor editor, Slides slides) {
   });
   
   document.query("#load_template").on.click.add((e) => loadTemplate(editor));
+  
+  final InputElement githubUrl = document.query("#github_url");
+  
+  document.query("#github_load").on.click.add((e) => githubLoader.loadFromUri(githubUrl.value));
 }
 
 void main() {

@@ -1,10 +1,8 @@
-// Copyright (c) 2011, the Dart project authors.  Please see the AUTHORS file
+// Copyright (c) 2012, the Dart project authors.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-/// Parses text in markdown format. Use this entrypoint if you want to parse
-/// markdown from your own Dart code. To parse markdown by running the script
-/// directly from the command line, see markdown.dart.
+/// Parses text in a markdown-like format and renders to HTML.
 #library('markdown');
 
 #source('ast.dart');
@@ -59,8 +57,8 @@ class Document {
       final match = pattern.firstMatch(lines[i]);
       if (match != null) {
         // Parse the link.
-        final id = match[1];
-        final url = match[2];
+        var id = match[1];
+        var url = match[2];
         var title = match[3];
 
         if (title == '') {
@@ -70,6 +68,9 @@ class Document {
           // Remove "", '', or ().
           title = title.substring(1, title.length - 1);
         }
+
+        // References are case-insensitive.
+        id = id.toLowerCase();
 
         refLinks[id] = new Link(id, url, title);
 

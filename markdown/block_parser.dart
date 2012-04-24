@@ -1,4 +1,4 @@
-// Copyright (c) 2011, the Dart project authors.  Please see the AUTHORS file
+// Copyright (c) 2012, the Dart project authors.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -293,7 +293,7 @@ class ListSyntax extends BlockSyntax {
       } else if (tryMatch(_RE_INDENT)) {
         // Strip off indent and add to current item.
         childLines.add(match[1]);
-      } else if (isAtBlockEnd(parser)) {
+      } else if (BlockSyntax.isAtBlockEnd(parser)) {
         // Done with the list.
         break;
       } else {
@@ -424,7 +424,7 @@ class ParagraphSyntax extends BlockSyntax {
     final childLines = [];
 
     // Eat until we hit something that ends a paragraph.
-    while (!isAtBlockEnd(parser)) {
+    while (!BlockSyntax.isAtBlockEnd(parser)) {
       childLines.add(parser.current);
       parser.advance();
     }

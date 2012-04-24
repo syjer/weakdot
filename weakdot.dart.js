@@ -263,6 +263,9 @@ $defProp(Object.prototype, "contains$1", function($0) {
 $defProp(Object.prototype, "end$0", function() {
   return this.noSuchMethod("end", []);
 });
+$defProp(Object.prototype, "filter$1", function($0) {
+  return this.noSuchMethod("filter", [$0]);
+});
 $defProp(Object.prototype, "indexOf$1", function($0) {
   return this.noSuchMethod("indexOf", [$0]);
 });
@@ -377,6 +380,13 @@ function StackOverflowException() {
 StackOverflowException.prototype.toString = function() {
   return "Stack Overflow";
 }
+// ********** Code for BadNumberFormatException **************
+function BadNumberFormatException(_s) {
+  this._s = _s;
+}
+BadNumberFormatException.prototype.toString = function() {
+  return ("BadNumberFormatException: '" + this._s + "'");
+}
 // ********** Code for NullPointerException **************
 function NullPointerException(functionName, arguments) {
   this.functionName = functionName;
@@ -472,6 +482,14 @@ FutureAlreadyCompleteException.prototype.toString = function() {
   return "Exception: future already completed";
 }
 // ********** Code for Math **************
+Math.parseInt = function(str) {
+    var match = /^\s*[+-]?(?:(0[xX][abcdefABCDEF0-9]+)|\d+)\s*$/.exec(str);
+    if (!match) $throw(new BadNumberFormatException(str));
+    var isHex = !!match[1];
+    var ret = parseInt(str, isHex ? 16 : 10);
+    if (isNaN(ret)) $throw(new BadNumberFormatException(str));
+    return ret;
+}
 Math.max = function(a, b) {
   return (a >= b) ? a : b;
 }
@@ -604,6 +622,9 @@ $defProp(ListFactory.prototype, "toString", function() {
 });
 $defProp(ListFactory.prototype, "add$1", ListFactory.prototype.add);
 $defProp(ListFactory.prototype, "clear$0", ListFactory.prototype.clear$_);
+$defProp(ListFactory.prototype, "filter$1", function($0) {
+  return this.filter(to$call$1($0));
+});
 $defProp(ListFactory.prototype, "indexOf$1", ListFactory.prototype.indexOf);
 // ********** Code for ListIterator **************
 function ListIterator(array) {
@@ -1211,6 +1232,9 @@ HashSetImplementation.prototype.toString = function() {
 HashSetImplementation.prototype.add$1 = HashSetImplementation.prototype.add;
 HashSetImplementation.prototype.clear$0 = HashSetImplementation.prototype.clear$_;
 HashSetImplementation.prototype.contains$1 = HashSetImplementation.prototype.contains;
+HashSetImplementation.prototype.filter$1 = function($0) {
+  return this.filter(to$call$1($0));
+};
 HashSetImplementation.prototype.remove$1 = HashSetImplementation.prototype.remove;
 // ********** Code for HashSetImplementation_dart_core_String **************
 $inherits(HashSetImplementation_dart_core_String, HashSetImplementation);
@@ -1218,6 +1242,9 @@ function HashSetImplementation_dart_core_String() {
   this._backingMap = new HashMapImplementation_dart_core_String$dart_core_String();
 }
 HashSetImplementation_dart_core_String.prototype.contains$1 = HashSetImplementation_dart_core_String.prototype.contains;
+HashSetImplementation_dart_core_String.prototype.filter$1 = function($0) {
+  return this.filter(to$call$1($0));
+};
 HashSetImplementation_dart_core_String.prototype.remove$1 = HashSetImplementation_dart_core_String.prototype.remove;
 // ********** Code for HashSetIterator **************
 function HashSetIterator(set_) {
@@ -1471,12 +1498,18 @@ DoubleLinkedQueue.prototype.toString = function() {
 }
 DoubleLinkedQueue.prototype.add$1 = DoubleLinkedQueue.prototype.add;
 DoubleLinkedQueue.prototype.clear$0 = DoubleLinkedQueue.prototype.clear$_;
+DoubleLinkedQueue.prototype.filter$1 = function($0) {
+  return this.filter(to$call$1($0));
+};
 // ********** Code for DoubleLinkedQueue_KeyValuePair **************
 $inherits(DoubleLinkedQueue_KeyValuePair, DoubleLinkedQueue);
 function DoubleLinkedQueue_KeyValuePair() {
   this._sentinel = new _DoubleLinkedQueueEntrySentinel_KeyValuePair();
 }
 DoubleLinkedQueue_KeyValuePair.prototype.clear$0 = DoubleLinkedQueue_KeyValuePair.prototype.clear$_;
+DoubleLinkedQueue_KeyValuePair.prototype.filter$1 = function($0) {
+  return this.filter(to$call$1($0));
+};
 // ********** Code for _DoubleLinkedQueueIterator **************
 function _DoubleLinkedQueueIterator(_sentinel) {
   this._sentinel = _sentinel;
@@ -2049,6 +2082,9 @@ $dynamic("getRange").CanvasPixelArray = function(start, rangeLength) {
 $dynamic("add$1").CanvasPixelArray = function($0) {
   return this.add($0);
 };
+$dynamic("filter$1").CanvasPixelArray = function($0) {
+  return this.filter(to$call$1($0));
+};
 $dynamic("indexOf$1").CanvasPixelArray = function($0) {
   return this.indexOf($0, (0));
 };
@@ -2272,7 +2308,7 @@ FilteredElementList.prototype.addAll = function(collection) {
   collection.forEach(this.get$add());
 }
 FilteredElementList.prototype.sort = function(compare) {
-  $throw(const$0021);
+  $throw(const$0017);
 }
 FilteredElementList.prototype.removeRange = function(start, rangeLength) {
   this.get$_filtered().getRange(start, rangeLength).forEach((function (el) {
@@ -2316,6 +2352,9 @@ FilteredElementList.prototype.last = function() {
 }
 FilteredElementList.prototype.add$1 = FilteredElementList.prototype.add;
 FilteredElementList.prototype.clear$0 = FilteredElementList.prototype.clear$_;
+FilteredElementList.prototype.filter$1 = function($0) {
+  return this.filter(to$call$1($0));
+};
 FilteredElementList.prototype.indexOf$1 = function($0) {
   return this.indexOf($0, (0));
 };
@@ -2441,10 +2480,10 @@ _ChildrenElementList.prototype.addAll = function(collection) {
   }
 }
 _ChildrenElementList.prototype.sort = function(compare) {
-  $throw(const$0021);
+  $throw(const$0017);
 }
 _ChildrenElementList.prototype.removeRange = function(start, rangeLength) {
-  $throw(const$0018);
+  $throw(const$0019);
 }
 _ChildrenElementList.prototype.getRange = function(start, rangeLength) {
   return new _FrozenElementList._wrap$ctor(_Lists.getRange(this, start, rangeLength, []));
@@ -2467,6 +2506,9 @@ _ChildrenElementList.prototype.last = function() {
 }
 _ChildrenElementList.prototype.add$1 = _ChildrenElementList.prototype.add;
 _ChildrenElementList.prototype.clear$0 = _ChildrenElementList.prototype.clear$_;
+_ChildrenElementList.prototype.filter$1 = function($0) {
+  return this.filter(to$call$1($0));
+};
 _ChildrenElementList.prototype.indexOf$1 = function($0) {
   return this.indexOf($0, (0));
 };
@@ -2512,22 +2554,22 @@ _FrozenElementList.prototype.$index = function(index) {
   return this._nodeList.$index(index);
 }
 _FrozenElementList.prototype.$setindex = function(index, value) {
-  $throw(const$0017);
+  $throw(const$0018);
 }
 _FrozenElementList.prototype.add = function(value) {
-  $throw(const$0017);
+  $throw(const$0018);
 }
 _FrozenElementList.prototype.iterator = function() {
   return new _FrozenElementListIterator(this);
 }
 _FrozenElementList.prototype.addAll = function(collection) {
-  $throw(const$0017);
+  $throw(const$0018);
 }
 _FrozenElementList.prototype.sort = function(compare) {
-  $throw(const$0017);
+  $throw(const$0018);
 }
 _FrozenElementList.prototype.removeRange = function(start, rangeLength) {
-  $throw(const$0017);
+  $throw(const$0018);
 }
 _FrozenElementList.prototype.getRange = function(start, rangeLength) {
   return new _FrozenElementList._wrap$ctor(this._nodeList.getRange(start, rangeLength));
@@ -2536,16 +2578,19 @@ _FrozenElementList.prototype.indexOf = function(element, start) {
   return this._nodeList.indexOf(element, start);
 }
 _FrozenElementList.prototype.clear$_ = function() {
-  $throw(const$0017);
+  $throw(const$0018);
 }
 _FrozenElementList.prototype.removeLast = function() {
-  $throw(const$0017);
+  $throw(const$0018);
 }
 _FrozenElementList.prototype.last = function() {
   return this._nodeList.last();
 }
 _FrozenElementList.prototype.add$1 = _FrozenElementList.prototype.add;
 _FrozenElementList.prototype.clear$0 = _FrozenElementList.prototype.clear$_;
+_FrozenElementList.prototype.filter$1 = function($0) {
+  return this.filter(to$call$1($0));
+};
 _FrozenElementList.prototype.indexOf$1 = function($0) {
   return this.indexOf($0, (0));
 };
@@ -2620,6 +2665,9 @@ _ListWrapper.prototype.get$first = function() {
 }
 _ListWrapper.prototype.add$1 = _ListWrapper.prototype.add;
 _ListWrapper.prototype.clear$0 = _ListWrapper.prototype.clear$_;
+_ListWrapper.prototype.filter$1 = function($0) {
+  return this.filter(to$call$1($0));
+};
 _ListWrapper.prototype.indexOf$1 = function($0) {
   return this.indexOf($0, (0));
 };
@@ -2630,6 +2678,9 @@ function _ListWrapper_Element(_list) {
 }
 _ListWrapper_Element.prototype.add$1 = _ListWrapper_Element.prototype.add;
 _ListWrapper_Element.prototype.clear$0 = _ListWrapper_Element.prototype.clear$_;
+_ListWrapper_Element.prototype.filter$1 = function($0) {
+  return this.filter(to$call$1($0));
+};
 _ListWrapper_Element.prototype.indexOf$1 = function($0) {
   return this.indexOf($0, (0));
 };
@@ -2644,6 +2695,9 @@ _ElementList.prototype.filter = function(f) {
 _ElementList.prototype.getRange = function(start, rangeLength) {
   return new _ElementList(_ListWrapper_Element.prototype.getRange.call(this, start, rangeLength));
 }
+_ElementList.prototype.filter$1 = function($0) {
+  return this.filter(to$call$1($0));
+};
 // ********** Code for _ElementAttributeMap **************
 function _ElementAttributeMap(_element) {
   this._html_element = _element;
@@ -2771,6 +2825,9 @@ _CssClassSet.prototype._formatSet = function(s) {
 _CssClassSet.prototype.add$1 = _CssClassSet.prototype.add;
 _CssClassSet.prototype.clear$0 = _CssClassSet.prototype.clear$_;
 _CssClassSet.prototype.contains$1 = _CssClassSet.prototype.contains;
+_CssClassSet.prototype.filter$1 = function($0) {
+  return this.filter(to$call$1($0));
+};
 _CssClassSet.prototype.remove$1 = _CssClassSet.prototype.remove;
 // ********** Code for _SimpleClientRect **************
 function _SimpleClientRect(left, top, width, height) {
@@ -2954,6 +3011,9 @@ $dynamic("getRange").Float32Array = function(start, rangeLength) {
 $dynamic("add$1").Float32Array = function($0) {
   return this.add($0);
 };
+$dynamic("filter$1").Float32Array = function($0) {
+  return this.filter(to$call$1($0));
+};
 $dynamic("indexOf$1").Float32Array = function($0) {
   return this.indexOf($0, (0));
 };
@@ -3005,6 +3065,9 @@ $dynamic("getRange").Float64Array = function(start, rangeLength) {
 }
 $dynamic("add$1").Float64Array = function($0) {
   return this.add($0);
+};
+$dynamic("filter$1").Float64Array = function($0) {
+  return this.filter(to$call$1($0));
 };
 $dynamic("indexOf$1").Float64Array = function($0) {
   return this.indexOf($0, (0));
@@ -3077,6 +3140,9 @@ $dynamic("getRange").HTMLCollection = function(start, rangeLength) {
 }
 $dynamic("add$1").HTMLCollection = function($0) {
   return this.add($0);
+};
+$dynamic("filter$1").HTMLCollection = function($0) {
+  return this.filter(to$call$1($0));
 };
 $dynamic("indexOf$1").HTMLCollection = function($0) {
   return this.indexOf($0, (0));
@@ -3218,6 +3284,9 @@ $dynamic("getRange").Int16Array = function(start, rangeLength) {
 $dynamic("add$1").Int16Array = function($0) {
   return this.add($0);
 };
+$dynamic("filter$1").Int16Array = function($0) {
+  return this.filter(to$call$1($0));
+};
 $dynamic("indexOf$1").Int16Array = function($0) {
   return this.indexOf($0, (0));
 };
@@ -3270,6 +3339,9 @@ $dynamic("getRange").Int32Array = function(start, rangeLength) {
 $dynamic("add$1").Int32Array = function($0) {
   return this.add($0);
 };
+$dynamic("filter$1").Int32Array = function($0) {
+  return this.filter(to$call$1($0));
+};
 $dynamic("indexOf$1").Int32Array = function($0) {
   return this.indexOf($0, (0));
 };
@@ -3321,6 +3393,9 @@ $dynamic("getRange").Int8Array = function(start, rangeLength) {
 }
 $dynamic("add$1").Int8Array = function($0) {
   return this.add($0);
+};
+$dynamic("filter$1").Int8Array = function($0) {
+  return this.filter(to$call$1($0));
 };
 $dynamic("indexOf$1").Int8Array = function($0) {
   return this.indexOf($0, (0));
@@ -3415,6 +3490,9 @@ $dynamic("getRange").MediaList = function(start, rangeLength) {
 $dynamic("add$1").MediaList = function($0) {
   return this.add($0);
 };
+$dynamic("filter$1").MediaList = function($0) {
+  return this.filter(to$call$1($0));
+};
 $dynamic("indexOf$1").MediaList = function($0) {
   return this.indexOf($0, (0));
 };
@@ -3507,6 +3585,9 @@ $dynamic("getRange").NamedNodeMap = function(start, rangeLength) {
 $dynamic("add$1").NamedNodeMap = function($0) {
   return this.add($0);
 };
+$dynamic("filter$1").NamedNodeMap = function($0) {
+  return this.filter(to$call$1($0));
+};
 $dynamic("indexOf$1").NamedNodeMap = function($0) {
   return this.indexOf($0, (0));
 };
@@ -3575,6 +3656,9 @@ _ChildNodeListLazy.prototype.$index = function(index) {
 }
 _ChildNodeListLazy.prototype.add$1 = _ChildNodeListLazy.prototype.add;
 _ChildNodeListLazy.prototype.clear$0 = _ChildNodeListLazy.prototype.clear$_;
+_ChildNodeListLazy.prototype.filter$1 = function($0) {
+  return this.filter(to$call$1($0));
+};
 _ChildNodeListLazy.prototype.indexOf$1 = function($0) {
   return this.indexOf($0, (0));
 };
@@ -3587,6 +3671,9 @@ function _ListWrapper_Node(_list) {
 }
 _ListWrapper_Node.prototype.add$1 = _ListWrapper_Node.prototype.add;
 _ListWrapper_Node.prototype.clear$0 = _ListWrapper_Node.prototype.clear$_;
+_ListWrapper_Node.prototype.filter$1 = function($0) {
+  return this.filter(to$call$1($0));
+};
 _ListWrapper_Node.prototype.indexOf$1 = function($0) {
   return this.indexOf($0, (0));
 };
@@ -3601,6 +3688,9 @@ _NodeListWrapper.prototype.filter = function(f) {
 _NodeListWrapper.prototype.getRange = function(start, rangeLength) {
   return new _NodeListWrapper(this._html_list.getRange(start, rangeLength));
 }
+_NodeListWrapper.prototype.filter$1 = function($0) {
+  return this.filter(to$call$1($0));
+};
 // ********** Code for _NodeListImpl **************
 $dynamic("is$List").NodeList = function(){return true};
 $dynamic("is$Collection").NodeList = function(){return true};
@@ -3662,6 +3752,9 @@ $dynamic("add$1").NodeList = function($0) {
 };
 $dynamic("clear$0").NodeList = function() {
   return this.clear$_();
+};
+$dynamic("filter$1").NodeList = function($0) {
+  return this.filter(to$call$1($0));
 };
 $dynamic("indexOf$1").NodeList = function($0) {
   return this.indexOf($0, (0));
@@ -4127,6 +4220,9 @@ $dynamic("getRange").StyleSheetList = function(start, rangeLength) {
 $dynamic("add$1").StyleSheetList = function($0) {
   return this.add($0);
 };
+$dynamic("filter$1").StyleSheetList = function($0) {
+  return this.filter(to$call$1($0));
+};
 $dynamic("indexOf$1").StyleSheetList = function($0) {
   return this.indexOf($0, (0));
 };
@@ -4228,6 +4324,9 @@ $dynamic("getRange").TouchList = function(start, rangeLength) {
 $dynamic("add$1").TouchList = function($0) {
   return this.add($0);
 };
+$dynamic("filter$1").TouchList = function($0) {
+  return this.filter(to$call$1($0));
+};
 $dynamic("indexOf$1").TouchList = function($0) {
   return this.indexOf($0, (0));
 };
@@ -4285,6 +4384,9 @@ $dynamic("getRange").Uint16Array = function(start, rangeLength) {
 $dynamic("add$1").Uint16Array = function($0) {
   return this.add($0);
 };
+$dynamic("filter$1").Uint16Array = function($0) {
+  return this.filter(to$call$1($0));
+};
 $dynamic("indexOf$1").Uint16Array = function($0) {
   return this.indexOf($0, (0));
 };
@@ -4337,6 +4439,9 @@ $dynamic("getRange").Uint32Array = function(start, rangeLength) {
 $dynamic("add$1").Uint32Array = function($0) {
   return this.add($0);
 };
+$dynamic("filter$1").Uint32Array = function($0) {
+  return this.filter(to$call$1($0));
+};
 $dynamic("indexOf$1").Uint32Array = function($0) {
   return this.indexOf($0, (0));
 };
@@ -4388,6 +4493,9 @@ $dynamic("getRange").Uint8Array = function(start, rangeLength) {
 }
 $dynamic("add$1").Uint8Array = function($0) {
   return this.add($0);
+};
+$dynamic("filter$1").Uint8Array = function($0) {
+  return this.filter(to$call$1($0));
 };
 $dynamic("indexOf$1").Uint8Array = function($0) {
   return this.indexOf($0, (0));
@@ -4761,6 +4869,7 @@ markdown_Document.prototype.parseRefLinks = function(lines) {
       else {
         title = title.substring((1), title.get$length() - (1));
       }
+      id0 = id0.toLowerCase();
       this.refLinks.$setindex(id0, new Link(id0, url, title));
       lines.$setindex(i, "");
     }
@@ -5167,8 +5276,12 @@ HtmlRenderer.prototype.visitElementBefore = function(element) {
     this.buffer.add("\n");
   }
   this.buffer.add(("<" + element.tag));
-  var $$list = element.attributes.getKeys();
-  for (var $$i = $$list.iterator(); $$i.hasNext(); ) {
+  var attributeNames = element.attributes.getKeys();
+  attributeNames.sort((function (a, b) {
+    return a.compareTo(b);
+  })
+  );
+  for (var $$i = attributeNames.iterator(); $$i.hasNext(); ) {
     var name = $$i.next();
     this.buffer.add((" " + name + "=\"" + element.attributes.$index(name) + "\""));
   }
@@ -5348,6 +5461,7 @@ LinkSyntax.prototype.onMatchEnd = function(parser, match, state) {
     if ($eq$(id, "")) {
       id = parser.source.substring(state.startPos + (1), parser.pos);
     }
+    id = id.toLowerCase();
     var link = parser.document.refLinks.$index(id);
     if ($eq$(link)) return false;
     url = link.get$url();
@@ -5685,6 +5799,111 @@ function _EditorObservable() {
 }
 _EditorObservable.prototype.get$change = function() { return this.change; };
 // ********** Code for top level **************
+//  ********** Library uri **************
+// ********** Code for Uri **************
+Uri.fromString$ctor = function(uri) {
+  Uri._fromMatch$ctor.call(this, const$0026.firstMatch(uri));
+}
+Uri.fromString$ctor.prototype = Uri.prototype;
+Uri._fromMatch$ctor = function(m) {
+  Uri.call(this, Uri._emptyIfNull(m.$index((1))), Uri._emptyIfNull(m.$index((2))), Uri._emptyIfNull(m.$index((3))), Uri._parseIntOrZero(m.$index((4))), Uri._emptyIfNull(m.$index((5))), Uri._emptyIfNull(m.$index((6))), Uri._emptyIfNull(m.$index((7))));
+}
+Uri._fromMatch$ctor.prototype = Uri.prototype;
+function Uri(scheme, userInfo, domain, port, path, query, fragment) {
+  this.scheme = scheme;
+  this.userInfo = userInfo;
+  this.domain = domain;
+  this.port = port;
+  this.path = path;
+  this.query = query;
+  this.fragment = fragment;
+}
+Uri._emptyIfNull = function(val) {
+  return val != null ? val : "";
+}
+Uri._parseIntOrZero = function(val) {
+  if (null != val && val != "") {
+    return Math.parseInt(val);
+  }
+  else {
+    return (0);
+  }
+}
+Uri.prototype.hasAuthority = function() {
+  return (this.userInfo != "") || (this.domain != "") || (this.port != (0));
+}
+Uri.prototype.toString = function() {
+  var sb = new StringBufferImpl("");
+  Uri._addIfNonEmpty(sb, this.scheme, this.scheme, ":");
+  if (this.hasAuthority() || (this.scheme == "file")) {
+    sb.add("//");
+    Uri._addIfNonEmpty(sb, this.userInfo, this.userInfo, "@");
+    sb.add(null == this.domain ? "null" : this.domain);
+    if (this.port != (0)) {
+      sb.add(":");
+      sb.add(this.port.toString());
+    }
+  }
+  sb.add(null == this.path ? "null" : this.path);
+  Uri._addIfNonEmpty(sb, this.query, "?", this.query);
+  Uri._addIfNonEmpty(sb, this.fragment, "#", this.fragment);
+  return sb.toString();
+}
+Uri._addIfNonEmpty = function(sb, test, first, second) {
+  if ("" != test) {
+    sb.add(null == first ? "null" : first);
+    sb.add(null == second ? "null" : second);
+  }
+}
+// ********** Code for top level **************
+//  ********** Library githubloader **************
+// ********** Code for GithubLoader **************
+function GithubLoader(editor) {
+  get$$window().get$on().get$message().add(this.get$_dataReceived(), false);
+  this._githubloader_editor = editor;
+}
+GithubLoader.prototype._dataReceived = function(e) {
+  var data = json_JSON.parse(e.data);
+  if (this._resourcePathToConsume.get$length() > (0)) {
+    var path = this._resourcePathToConsume.$index((0));
+    var url = data.$index("data").$index("tree").filter$1((function (elem) {
+      return $eq$(elem.$index("path"), path);
+    })
+    ).last().$index("url");
+    this._resourcePathToConsume.removeRange((0), (1));
+    this._doJsonPCall(("" + url + "?callback=callbackForJsonpApi"));
+  }
+  else {
+    this._githubloader_editor.set$value(base64Decode(data.$index("data").$index("content")));
+  }
+}
+GithubLoader.prototype.get$_dataReceived = function() {
+  return this._dataReceived.bind(this);
+}
+GithubLoader.prototype.loadFromUri = function(uri) {
+  if (uri != "") {
+    var resource = new Uri.fromString$ctor(uri);
+    var userAndRepo;
+    var branch;
+    var resourcePath;
+    if (resource.domain == "github.com") {
+      var splitted = resource.path.substring((1)).split$_("/");
+      userAndRepo = $add$($add$(splitted.$index((0)), "/"), splitted.$index((1)));
+      branch = splitted.$index((3));
+      this._resourcePathToConsume = splitted.getRange((4), splitted.get$length() - (4));
+    }
+    this._doJsonPCall(("https://api.github.com/repos/" + userAndRepo + "/git/trees/" + branch + "?callback=callbackForJsonpApi"));
+  }
+}
+GithubLoader.prototype._doJsonPCall = function(src) {
+  var script = _ElementFactoryProvider.Element$tag$factory("script");
+  script.src = src;
+  get$$document().body.get$elements().add(script);
+}
+// ********** Code for top level **************
+function base64Decode(s) {
+  return get$$window().atob(s.replaceAll("\n", ""));
+}
 //  ********** Library C:\Users\sylvain-user\dart\weakdot\weakdot **************
 // ********** Code for top level **************
 function updateListSlideNames(storage) {
@@ -5697,6 +5916,7 @@ function updateListSlideNames(storage) {
   );
 }
 function prepareGui(storage, editor, slides) {
+  var githubLoader = new GithubLoader(editor);
   updateListSlideNames(storage);
   storage.on.clear$_.add((function () {
     return updateListSlideNames(storage);
@@ -5749,6 +5969,11 @@ function prepareGui(storage, editor, slides) {
   );
   get$$document().query("#load_template").get$on().get$click().add$1((function (e) {
     return loadTemplate(editor);
+  })
+  );
+  var githubUrl = get$$document().query("#github_url");
+  get$$document().query("#github_load").get$on().get$click().add$1((function (e) {
+    return githubLoader.loadFromUri(githubUrl.value);
   })
   );
 }
@@ -5824,13 +6049,14 @@ var const$0012 = Object.create(IllegalAccessException.prototype, {});
 var const$0013 = Object.create(EmptyQueueException.prototype, {});
 var const$0014 = _constMap([]);
 var const$0016 = new JSSyntaxRegExp("blockquote|h1|h2|h3|h4|h5|h6|hr|p|pre");
-var const$0017 = Object.create(UnsupportedOperationException.prototype, {_message: {"value": "", writeable: false}});
-var const$0018 = Object.create(NotImplementedException.prototype, {});
-var const$0021 = Object.create(UnsupportedOperationException.prototype, {_message: {"value": "TODO(jacobr): should we impl?", writeable: false}});
+var const$0017 = Object.create(UnsupportedOperationException.prototype, {_message: {"value": "TODO(jacobr): should we impl?", writeable: false}});
+var const$0018 = Object.create(UnsupportedOperationException.prototype, {_message: {"value": "", writeable: false}});
+var const$0019 = Object.create(NotImplementedException.prototype, {});
 var const$0022 = new JSSyntaxRegExp("<(\\w+)");
 var const$0023 = _constMap(["body", "html", "head", "html", "caption", "table", "td", "tr", "colgroup", "table", "col", "colgroup", "tr", "tbody", "tbody", "table", "tfoot", "table", "thead", "table", "track", "audio"]);
 var const$0024 = new JSSyntaxRegExp("^\\[name=[\"'][^'\"]+['\"]\\]$");
 var const$0025 = new JSSyntaxRegExp("^[*a-zA-Z0-9]+$");
+var const$0026 = new JSSyntaxRegExp("^(?:([^:/?#.]+):)?(?://(?:([^/?#]*)@)?([\\w\\d\\-\\u0100-\\uffff.%]*)(?::([0-9]+))?)?([^?#]+)?(?:\\?([^#]*))?(?:#(.*))?$");
 var const$0015 = ImmutableList.ImmutableList$from$factory([const$0003, const$0007, const$0009, const$0005, const$0004, const$0006]);
 var $globals = {};
 $static_init();

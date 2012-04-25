@@ -6,7 +6,7 @@
     <script type="text/javascript">
 //http://blog.sethladd.com/2012/03/jsonp-with-dart.html see #2
 function callbackForJsonpApi(s) {
-  window.postMessage(JSON.stringify(s), '*');
+  window.postMessage(JSON.stringify(s), '*');//FIXME lol security issues
 }
 </script>
   </head>
@@ -36,7 +36,7 @@ function callbackForJsonpApi(s) {
     				</ul>
     			</div>
     		</div>
-    		<div id="slides_container" class="preview_edit_mode">&nbsp;</div>
+    		<div id="slides_container" class="preview_edit_mode"><div>&nbsp;</div></div>
     	</div>
     </div>
     

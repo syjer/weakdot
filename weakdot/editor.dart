@@ -20,8 +20,12 @@ class Editor {
     _slidesPreviewContainer = document.query('#slides_container'),
     on = new _EditorObservable() {
     _editor.on.keyUp.add((e)=> on.change.notifyObservers());
+    on.change.add(() => _slidesPreviewContainer.innerHTML = ('<div>' + buildSlides(this.value)) + '</div>');
     
-    on.change.add(() => _slidesPreviewContainer.innerHTML = buildSlides(this.value));
+    //FIXME: use selectionStart-> get all text before -> derive number of slides before the cursor -> view visibility
+    _editor.on.keyUp.add((e) => print('keyUp ${_editor.selectionStart}'));
+    _editor.on.click.add((e) => print('click ${_editor.selectionStart}'));
+    
   }
   
   String get value() => _editor.value;

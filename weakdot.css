@@ -61,12 +61,18 @@ body {
 }
 
 .preview_edit_mode > div {
+	height:500px;
+	overflow:auto;
+	padding-top:40px;
+}
+
+.preview_edit_mode > div > div {
 	width:512px;
 	margin-left:auto;
 	margin-right:auto;
 }
 
-.preview_edit_mode > div:after {
+.preview_edit_mode > div > div:after {
 	content: counter(preview_slide_page, decimal-leading-zero);
 	counter-increment: preview_slide_page;
 	font-weight:bold;
@@ -75,7 +81,7 @@ body {
 	position:relative;
 }
 
-.preview_edit_mode > div > div {
+.preview_edit_mode > div > div > div {
 	margin-left:auto;
 	margin-right:auto;
 	height: 320px;
@@ -85,7 +91,7 @@ body {
 	margin-bottom:85px;
 }
 
-.preview_edit_mode > div > div:hover {
+.preview_edit_mode > div > div > div:hover {
 	box-shadow: 0 0 50px blue;
 }
 
@@ -210,6 +216,7 @@ section.slide blockquote {
 #editor_zone {
 	display:table-cell;
 	width:50%;
+	padding-top:40px;
 	padding-left:10px;
 	padding-right:10px;
 }

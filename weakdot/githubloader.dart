@@ -27,7 +27,13 @@ class GithubLoader {
   
   
   _dataReceived(MessageEvent e) {
-    var data = JSON.parse(e.data);
+    var data = null;
+    try {
+      data = JSON.parse(e.data);
+    } catch(final exc) {
+      //not a json string...
+      return;
+    }
     
     //continue to dive...
     if(_resourcePathToConsume.length > 0) {

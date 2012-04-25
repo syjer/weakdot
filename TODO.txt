@@ -1,16 +1,13 @@
 TODO:
 -----
--1: see FIXME
-0: isolate bug with IE: element.style.display = 'none'; generate an error.
 
-- look at for organizing the code
-- https://github.com/sethladd/dart-mvc-playing-around
+0: center slide that is currently edited
+0.5: clicking on the slide preview should launch the presentation at the slide X
+1: gui (still a battlefield...)
+2: save/load slides gui for localstorage is quite messy!
+3: use history api for creating nice url for saving the state
+3: export to imgur, export to file, import from imgur, import from other github urls (gist, raw url)
 
-~~
-
-1: export+load
-2: organize the code.
-3: gui (still a battlefield...)
 
 
 misc links & stuff.

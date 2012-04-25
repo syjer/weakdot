@@ -2225,7 +2225,7 @@ $dynamic("$dom_querySelector").HTMLDocument = function(selectors) {
   return this.querySelector(selectors);
 }
 $dynamic("queryAll").HTMLDocument = function(selectors) {
-  if (const$0024.hasMatch(selectors)) {
+  if (const$0020.hasMatch(selectors)) {
     var mutableMatches = this.getElementsByName(selectors.substring((7), selectors.length - (2)));
     var len = mutableMatches.get$length();
     var copyOfMatches = new Array(len);
@@ -2235,7 +2235,7 @@ $dynamic("queryAll").HTMLDocument = function(selectors) {
     }
     return new _FrozenElementList._wrap$ctor(copyOfMatches);
   }
-  else if (const$0025.hasMatch(selectors)) {
+  else if (const$0021.hasMatch(selectors)) {
     var mutableMatches = this.getElementsByTagName(selectors);
     var len = mutableMatches.get$length();
     var copyOfMatches = new Array(len);
@@ -2855,11 +2855,11 @@ function _ElementFactoryProvider() {}
 _ElementFactoryProvider.Element$html$factory = function(html) {
   var parentTag = "div";
   var tag;
-  var match = const$0022.firstMatch(html);
+  var match = const$0024.firstMatch(html);
   if (null != match) {
     tag = match.group((1)).toLowerCase();
-    if (const$0023.containsKey(tag)) {
-      parentTag = const$0023.$index(tag);
+    if (const$0025.containsKey(tag)) {
+      parentTag = const$0025.$index(tag);
     }
   }
   var temp = _ElementFactoryProvider.Element$tag$factory(parentTag);
@@ -5672,12 +5672,14 @@ WeakDotStorage.prototype.clear$0 = WeakDotStorage.prototype.clear$_;
 // ********** Code for Slides **************
 function Slides() {
   this._slidesShowContainer = get$$document().query("#slides_show");
+  this.on = new _SlidesObservable();
   this._handleKeysInSlideModeHandler = this.get$_handleKeysInSlideMode();
   this._resizeSlideHandler = (function (e) {
     return _resizeSlide();
   })
   ;
 }
+Slides.prototype.get$on = function() { return this.on; };
 Slides.prototype.show = function(markdownText) {
   this._slidesShowContainer.set$innerHTML(buildSlides(markdownText));
   showElements("#slide_mode, #slides_show");
@@ -5726,6 +5728,8 @@ Slides.prototype._handleKeysInSlideMode = function(event) {
 
     case (27):
 
+      this.hide();
+      this.on.exit.notifyObservers();
       event.preventDefault();
       break;
 
@@ -5733,6 +5737,10 @@ Slides.prototype._handleKeysInSlideMode = function(event) {
 }
 Slides.prototype.get$_handleKeysInSlideMode = function() {
   return this._handleKeysInSlideMode.bind(this);
+}
+// ********** Code for _SlidesObservable **************
+function _SlidesObservable() {
+  this.exit = new Observable();
 }
 // ********** Code for top level **************
 function _resizeSlide() {
@@ -5757,7 +5765,15 @@ function Editor(storage) {
   , false);
   this.on.change.add((function () {
     var $0;
-    return ($this._slidesPreviewContainer.set$innerHTML(($0 = buildSlides($this.get$value()))), $0);
+    return ($this._slidesPreviewContainer.set$innerHTML(($0 = $add$(($add$("<div>", buildSlides($this.get$value()))), "</div>"))), $0);
+  })
+  );
+  this._editor.get$on().get$keyUp().add((function (e) {
+    return print$(("keyUp " + $this._editor.selectionStart));
+  })
+  , false);
+  this._editor.get$on().get$click().add$1((function (e) {
+    return print$(("click " + $this._editor.selectionStart));
   })
   );
 }
@@ -5863,7 +5879,13 @@ function GithubLoader(editor) {
   this._githubloader_editor = editor;
 }
 GithubLoader.prototype._dataReceived = function(e) {
-  var data = json_JSON.parse(e.data);
+  var data = null;
+  try {
+    data = json_JSON.parse(e.data);
+  } catch (exc) {
+    exc = _toDartException(exc);
+    return;
+  }
   if (this._resourcePathToConsume.get$length() > (0)) {
     var path = this._resourcePathToConsume.$index((0));
     var url = data.$index("data").$index("tree").filter$1((function (elem) {
@@ -5924,6 +5946,10 @@ function prepareGui(storage, editor, slides) {
   );
   editor.on.save.add((function () {
     return updateListSlideNames(storage);
+  })
+  );
+  slides.on.exit.add((function () {
+    return editor.show();
   })
   );
   var slideSelect = get$$document().query("#slide_list");
@@ -6052,10 +6078,10 @@ var const$0016 = new JSSyntaxRegExp("blockquote|h1|h2|h3|h4|h5|h6|hr|p|pre");
 var const$0017 = Object.create(UnsupportedOperationException.prototype, {_message: {"value": "TODO(jacobr): should we impl?", writeable: false}});
 var const$0018 = Object.create(UnsupportedOperationException.prototype, {_message: {"value": "", writeable: false}});
 var const$0019 = Object.create(NotImplementedException.prototype, {});
-var const$0022 = new JSSyntaxRegExp("<(\\w+)");
-var const$0023 = _constMap(["body", "html", "head", "html", "caption", "table", "td", "tr", "colgroup", "table", "col", "colgroup", "tr", "tbody", "tbody", "table", "tfoot", "table", "thead", "table", "track", "audio"]);
-var const$0024 = new JSSyntaxRegExp("^\\[name=[\"'][^'\"]+['\"]\\]$");
-var const$0025 = new JSSyntaxRegExp("^[*a-zA-Z0-9]+$");
+var const$0020 = new JSSyntaxRegExp("^\\[name=[\"'][^'\"]+['\"]\\]$");
+var const$0021 = new JSSyntaxRegExp("^[*a-zA-Z0-9]+$");
+var const$0024 = new JSSyntaxRegExp("<(\\w+)");
+var const$0025 = _constMap(["body", "html", "head", "html", "caption", "table", "td", "tr", "colgroup", "table", "col", "colgroup", "tr", "tbody", "tbody", "table", "tfoot", "table", "thead", "table", "track", "audio"]);
 var const$0026 = new JSSyntaxRegExp("^(?:([^:/?#.]+):)?(?://(?:([^/?#]*)@)?([\\w\\d\\-\\u0100-\\uffff.%]*)(?::([0-9]+))?)?([^?#]+)?(?:\\?([^#]*))?(?:#(.*))?$");
 var const$0015 = ImmutableList.ImmutableList$from$factory([const$0003, const$0007, const$0009, const$0005, const$0004, const$0006]);
 var $globals = {};

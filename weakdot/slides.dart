@@ -8,12 +8,13 @@
 class Slides {
 
   final Element _slidesShowContainer;
+  final _SlidesObservable on;
   
   //workaround for issue https://code.google.com/p/dart/issues/detail?id=144
   var _handleKeysInSlideModeHandler;
   var _resizeSlideHandler;
   
-  Slides() : _slidesShowContainer = document.query("#slides_show") {
+  Slides() : _slidesShowContainer = document.query("#slides_show"), on = new _SlidesObservable() {
     _handleKeysInSlideModeHandler = _handleKeysInSlideMode;
     _resizeSlideHandler = (Event e) => _resizeSlide();
   }
@@ -75,13 +76,13 @@ class Slides {
       event.preventDefault();
       break;
     case 27: //esc 
-      //toggleEditMode();
+      hide();
+      on.exit.notifyObservers();
       event.preventDefault();
       break;
     }
   }
 }
-
 
 void _resizeSlide() {
   //rect return a future. see https://groups.google.com/a/dartlang.org/group/misc/browse_thread/thread/5587b66fe0d00bc5
@@ -92,3 +93,10 @@ void _resizeSlide() {
   });
 }
 
+
+
+class _SlidesObservable {
+  final Observable exit;
+  
+  _SlidesObservable() : exit = new Observable();
+}

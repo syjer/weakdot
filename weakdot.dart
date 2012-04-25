@@ -25,6 +25,7 @@ void prepareGui(WeakDotStorage storage, Editor editor, Slides slides) {
   
   storage.on.clear.add(() => updateListSlideNames(storage));
   editor.on.save.add(() => updateListSlideNames(storage));
+  slides.on.exit.add(() =>editor.show());
   
   
   //on select slide.

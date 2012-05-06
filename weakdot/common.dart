@@ -32,6 +32,10 @@ bool isHidden(String selector) {
   return document.query(selector).classes.contains('hide');
 }
 
+int slideCount(String text) {
+  return markdown.markdownToHtml(text).split('<hr />').length;
+}
+
 
 /**/
 String buildSlides(String text) {

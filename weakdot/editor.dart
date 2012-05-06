@@ -22,10 +22,16 @@ class Editor {
     _editor.on.keyUp.add((e)=> on.change.notifyObservers());
     on.change.add(() => _slidesPreviewContainer.innerHTML = ('<div>' + buildSlides(this.value)) + '</div>');
     
-    //FIXME: use selectionStart-> get all text before -> derive number of slides before the cursor -> view visibility
-    _editor.on.keyUp.add((e) => print('keyUp ${_editor.selectionStart}'));
-    _editor.on.click.add((e) => print('click ${_editor.selectionStart}'));
-    
+    //
+    _editor.on.keyUp.add(_centerCurrentlyEditedSlide);
+    _editor.on.click.add(_centerCurrentlyEditedSlide);
+    //
+  }
+  
+  void _centerCurrentlyEditedSlide(e) {
+    int currentSlide = slideCount(_editor.value == null ? "" : _editor.value.substring(0, _editor.selectionStart));
+    Element container = document.query("#slides_container > div");
+    container.$dom_scrollTop = 435 * (currentSlide -1 );  /* 435 = slide dimension*/
   }
   
   String get value() => _editor.value;

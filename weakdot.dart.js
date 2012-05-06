@@ -1875,6 +1875,9 @@ $dynamic("get$$$dom_scrollLeft").Element = function() {
 $dynamic("get$$$dom_scrollTop").Element = function() {
   return this.scrollTop;
 }
+$dynamic("set$$$dom_scrollTop").Element = function(value) {
+  this.scrollTop = value;
+}
 $dynamic("get$$$dom_scrollWidth").Element = function() {
   return this.scrollWidth;
 }
@@ -5413,6 +5416,9 @@ function hideElements(selector) {
 function isHidden(selector) {
   return get$$document().query(selector).get$classes().contains$1("hide");
 }
+function slideCount(text) {
+  return markdownToHtml(text).split$_("<hr />").get$length();
+}
 function buildSlides(text) {
   var sb = new StringBufferImpl("");
   markdownToHtml(text).split$_("<hr />").forEach$1((function (slide) {
@@ -5597,16 +5603,18 @@ function Editor(storage) {
     return ($this._slidesPreviewContainer.set$innerHTML(($0 = $add$(($add$("<div>", buildSlides($this.get$value()))), "</div>"))), $0);
   })
   );
-  this._editor.get$on().get$keyUp().add($wrap_call$1((function (e) {
-    return print$(("keyUp " + $this._editor.selectionStart));
-  })
-  ), false);
-  this._editor.get$on().get$click().add$1((function (e) {
-    return print$(("click " + $this._editor.selectionStart));
-  })
-  );
+  this._editor.get$on().get$keyUp().add($wrap_call$1(this.get$_centerCurrentlyEditedSlide()), false);
+  this._editor.get$on().get$click().add$1(this.get$_centerCurrentlyEditedSlide());
 }
 Editor.prototype.get$on = function() { return this.on; };
+Editor.prototype._centerCurrentlyEditedSlide = function(e) {
+  var currentSlide = slideCount(this._editor.value == null ? "" : this._editor.value.substring((0), this._editor.selectionStart));
+  var container = get$$document().query("#slides_container > div");
+  container.set$$$dom_scrollTop((435) * (currentSlide - (1)));
+}
+Editor.prototype.get$_centerCurrentlyEditedSlide = function() {
+  return this._centerCurrentlyEditedSlide.bind(this);
+}
 Editor.prototype.get$value = function() {
   return this._editor.value;
 }

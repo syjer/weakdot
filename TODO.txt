@@ -1,6 +1,5 @@
 TODO:
 -----
-
 0: center slide that is currently edited
 0.5: clicking on the slide preview should launch the presentation at the slide X
 1: gui (still a battlefield...)

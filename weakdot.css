@@ -87,12 +87,12 @@ body {
 	height: 320px;
 	width:512px;
 	overflow:hidden;
-	box-shadow: 0 0 50px #3C3D40;
+	box-shadow: 0 0 30px #3C3D40;
 	margin-bottom:85px;
 }
 
 .preview_edit_mode > div > div > div:hover {
-	box-shadow: 0 0 50px blue;
+	box-shadow: 0 0 30px #070707;
 }
 
 .preview_edit_mode section.slide {
@@ -143,8 +143,12 @@ section.slide h7 {
 
 section.slide ol,
 section.slide ul {
-	margin-bottom: 45px;
 	counter-reset:list;
+}
+
+section.slide li > ul,
+section.slide li > ol {
+	margin-left:30px;
 }
 
 section.slide ul li:before {
@@ -171,7 +175,6 @@ section.slide li {
 }
 
 section.slide p {
-	margin-bottom: 45px;
 	line-height:1.5;
 }
 

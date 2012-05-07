@@ -13,8 +13,12 @@ class Observable {
   
   //TODO add remove
   
-  void notifyObservers() {
-    _observers.forEach((Function observer) => observer());
+  void notifyObservers([var obj]) {
+    if(obj == null) {
+      _observers.forEach((Function observer) => observer());
+    } else {
+      _observers.forEach((Function observer) => observer(obj));
+    }
   }
 }
 

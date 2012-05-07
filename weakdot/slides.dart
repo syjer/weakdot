@@ -19,7 +19,7 @@ class Slides {
     _resizeSlideHandler = (Event e) => _resizeSlide();
   }
   
-  void show(String markdownText) {
+  void show(String markdownText, [int showSlideNumber = 0]) {
     
     _slidesShowContainer.innerHTML = buildSlides(markdownText);
     
@@ -33,7 +33,7 @@ class Slides {
     
     
     if (_slidesShowContainer.query('.slide-container') != null) {
-      _slidesShowContainer.queryAll('.slide-container').first.classes.add('selected-slide');
+      _slidesShowContainer.queryAll('.slide-container')[showSlideNumber].classes.add('selected-slide');
     }
     
     document.on.keyDown.add(_handleKeysInSlideModeHandler);

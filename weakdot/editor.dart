@@ -20,12 +20,17 @@ class Editor {
     _slidesPreviewContainer = document.query('#slides_container'),
     on = new _EditorObservable() {
     _editor.on.keyUp.add((e)=> on.change.notifyObservers());
-    on.change.add(() => _slidesPreviewContainer.innerHTML = ('<div>' + buildSlides(this.value)) + '</div>');
-    
+    on.change.add(_handleValueChange);
     //
     _editor.on.keyUp.add(_centerCurrentlyEditedSlide);
     _editor.on.click.add(_centerCurrentlyEditedSlide);
     //
+  }
+  
+  void _handleValueChange() {
+    _slidesPreviewContainer.innerHTML = '<div>' + buildSlides(this.value) + '</div>';
+    //TODO cleanup the dom hierarchy climbing for fetching the position... use data attribute...
+    document.queryAll(".slide-container > div").forEach((Element e) => e.on.click.add((v) => on.slidePreviewClick.notifyObservers(e.parent.parent.nodes.indexOf(e.parent))));
   }
   
   void _centerCurrentlyEditedSlide(e) {
@@ -77,6 +82,7 @@ class Editor {
 class _EditorObservable {
   final Observable change;
   final Observable save;
+  final Observable slidePreviewClick;
   
-  _EditorObservable() : change = new Observable(), save = new Observable();
+  _EditorObservable() : change = new Observable(), save = new Observable(), slidePreviewClick = new Observable();
 }

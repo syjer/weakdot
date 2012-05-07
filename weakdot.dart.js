@@ -4404,6 +4404,7 @@ $dynamic("get$on").DOMWindow = function() {
 }
 $dynamic("get$length").DOMWindow = function() { return this.length; };
 $dynamic("get$name").DOMWindow = function() { return this.name; };
+$dynamic("get$parent").DOMWindow = function() { return this.parent; };
 $dynamic("$dom_addEventListener$3").DOMWindow = function($0, $1, $2) {
   return this.addEventListener($0, $wrap_call$1(to$call$1($1)), $2);
 };
@@ -5394,11 +5395,19 @@ function Observable() {
 Observable.prototype.add = function(observer) {
   this._observers.add(observer);
 }
-Observable.prototype.notifyObservers = function() {
-  this._observers.forEach$1((function (observer) {
-    return observer.call$0();
-  })
-  );
+Observable.prototype.notifyObservers = function(obj) {
+  if ($eq$(obj)) {
+    this._observers.forEach$1((function (observer) {
+      return observer.call$0();
+    })
+    );
+  }
+  else {
+    this._observers.forEach$1((function (observer) {
+      return observer.call$1(obj);
+    })
+    );
+  }
 }
 Observable.prototype.add$1 = Observable.prototype.add;
 function showElements(selector) {
@@ -5519,7 +5528,7 @@ function Slides() {
   ;
 }
 Slides.prototype.get$on = function() { return this.on; };
-Slides.prototype.show = function(markdownText) {
+Slides.prototype.show = function(markdownText, showSlideNumber) {
   this._slidesShowContainer.set$innerHTML(buildSlides(markdownText));
   showElements("#slide_mode, #slides_show");
   var controlsStyle = get$$document().query("#controls").style;
@@ -5527,7 +5536,7 @@ Slides.prototype.show = function(markdownText) {
   controlsStyle.set$left("10px");
   get$$document().body.get$classes().add$1("full");
   if ($ne$(this._slidesShowContainer.query$1(".slide-container"))) {
-    this._slidesShowContainer.queryAll(".slide-container").get$first().get$classes().add$1("selected-slide");
+    this._slidesShowContainer.queryAll(".slide-container").$index(showSlideNumber).get$classes().add$1("selected-slide");
   }
   get$$document().get$on().get$keyDown().add($wrap_call$1(to$call$1(this._handleKeysInSlideModeHandler)), false);
   get$$document().get$window().get$on().get$resize().add($wrap_call$1(to$call$1(this._resizeSlideHandler)), false);
@@ -5598,15 +5607,25 @@ function Editor(storage) {
     return $this.on.change.notifyObservers();
   })
   ), false);
-  this.on.change.add((function () {
-    var $0;
-    return ($this._slidesPreviewContainer.set$innerHTML(($0 = $add$(($add$("<div>", buildSlides($this.get$value()))), "</div>"))), $0);
-  })
-  );
+  this.on.change.add(this.get$_handleValueChange());
   this._editor.get$on().get$keyUp().add($wrap_call$1(this.get$_centerCurrentlyEditedSlide()), false);
   this._editor.get$on().get$click().add$1(this.get$_centerCurrentlyEditedSlide());
 }
 Editor.prototype.get$on = function() { return this.on; };
+Editor.prototype._handleValueChange = function() {
+  var $this = this;
+  this._slidesPreviewContainer.set$innerHTML($add$($add$("<div>", buildSlides(this.get$value())), "</div>"));
+  get$$document().queryAll(".slide-container > div").forEach$1((function (e) {
+    return e.get$on().get$click().add$1((function (v) {
+      return $this.on.slidePreviewClick.notifyObservers(e.get$parent().get$parent().get$nodes().indexOf(e.get$parent(), (0)));
+    })
+    );
+  })
+  );
+}
+Editor.prototype.get$_handleValueChange = function() {
+  return this._handleValueChange.bind(this);
+}
 Editor.prototype._centerCurrentlyEditedSlide = function(e) {
   var currentSlide = slideCount(this._editor.value == null ? "" : this._editor.value.substring((0), this._editor.selectionStart));
   var container = get$$document().query("#slides_container > div");
@@ -5648,6 +5667,7 @@ Editor.prototype.isSlidePreviewHidden = function() {
 function _EditorObservable() {
   this.change = new Observable();
   this.save = new Observable();
+  this.slidePreviewClick = new Observable();
 }
 _EditorObservable.prototype.get$change = function() { return this.change; };
 Uri.fromString$ctor = function(uri) {
@@ -5804,9 +5824,14 @@ function prepareGui(storage, editor, slides) {
     }
   })
   );
+  editor.on.slidePreviewClick.add((function (slidePosition) {
+    editor.hide();
+    slides.show(editor.get$value(), slidePosition);
+  })
+  );
   get$$document().query("#toggle_slide_mode_button").get$on().get$click().add$1((function (e) {
     editor.hide();
-    slides.show(editor.get$value());
+    slides.show(editor.get$value(), (0));
   })
   );
   get$$document().query("#toggle_edit_mode_button").get$on().get$click().add$1((function (e) {

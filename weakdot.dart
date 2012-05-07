@@ -27,7 +27,6 @@ void prepareGui(WeakDotStorage storage, Editor editor, Slides slides) {
   editor.on.save.add(() => updateListSlideNames(storage));
   slides.on.exit.add(() => editor.show());
   
-  
   //on select slide.
   final SelectElement slideSelect = document.query("#slide_list");
   slideSelect.on.change.add((Event e) {
@@ -56,6 +55,11 @@ void prepareGui(WeakDotStorage storage, Editor editor, Slides slides) {
       editor.hideSlidePreview();
       showHideButton.text = 'show preview';
     }
+  });
+  
+  editor.on.slidePreviewClick.add((int slidePosition) {
+    editor.hide();
+    slides.show(editor.value, slidePosition);
   });
   
   document.query('#toggle_slide_mode_button').on.click.add((e) {

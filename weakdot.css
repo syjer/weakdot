@@ -93,10 +93,6 @@ body {
 	border-right:0;
 }
 
-/*#edit_mode > ul > li:first-child {
-	padding-left:0px;
-}*/
-
 .preview_edit_mode > div {
 	height:500px;
 	overflow:auto;
@@ -242,6 +238,20 @@ section.slide blockquote {
 }
 
 #controls {
+}
+
+.controls-in-slide-mode {
+	height:80px;
+	position:absolute;
+	width:100%;
+}
+
+.controls-in-slide-mode > div {
+	display:none;
+}
+
+.controls-in-slide-mode:hover > div {
+	display:block;
 }
 
 #editing_area {

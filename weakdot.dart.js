@@ -1973,12 +1973,6 @@ $dynamic("get$length").CharacterData = function() { return this.length; };
 $dynamic("get$name").WebKitCSSKeyframesRule = function() { return this.name; };
 $dynamic("get$length").CSSRuleList = function() { return this.length; };
 $dynamic("get$length").CSSStyleDeclaration = function() { return this.length; };
-$dynamic("set$left").CSSStyleDeclaration = function(value) {
-  this.setProperty("left", value, "");
-}
-$dynamic("set$position").CSSStyleDeclaration = function(value) {
-  this.setProperty("position", value, "");
-}
 $dynamic("set$transform").CSSStyleDeclaration = function(value) {
   this.setProperty(("" + get$$_browserPrefix() + "transform"), value, "");
 }
@@ -5531,9 +5525,7 @@ Slides.prototype.get$on = function() { return this.on; };
 Slides.prototype.show = function(markdownText, showSlideNumber) {
   this._slidesShowContainer.set$innerHTML(buildSlides(markdownText));
   showElements("#slide_mode, #slides_show");
-  var controlsStyle = get$$document().query("#controls").style;
-  controlsStyle.set$position("absolute");
-  controlsStyle.set$left("10px");
+  get$$document().query("#controls").get$classes().add$1("controls-in-slide-mode");
   get$$document().body.get$classes().add$1("full");
   if ($ne$(this._slidesShowContainer.query$1(".slide-container"))) {
     this._slidesShowContainer.queryAll(".slide-container").$index(showSlideNumber).get$classes().add$1("selected-slide");
@@ -5545,7 +5537,7 @@ Slides.prototype.show = function(markdownText, showSlideNumber) {
 Slides.prototype.hide = function() {
   get$$document().body.style.set$transform("");
   hideElements("#slide_mode, #slides_show");
-  get$$document().query("#controls").style.set$position("");
+  get$$document().query("#controls").get$classes().remove$1("controls-in-slide-mode");
   get$$document().body.get$classes().remove$1("full");
   if (get$$document().query("#slides_show .selected-slide") != null) {
     get$$document().query("#slides_show .selected-slide").get$classes().remove$1("selected-slide");

@@ -25,12 +25,8 @@ class Slides {
     
     showElements('#slide_mode, #slides_show');
     
-    final CSSStyleDeclaration controlsStyle = document.query("#controls").style;
-    controlsStyle.position = 'absolute';
-    controlsStyle.left = '10px';
-    
+    document.query("#controls").classes.add("controls-in-slide-mode");
     document.body.classes.add('full');
-    
     
     if (_slidesShowContainer.query('.slide-container') != null) {
       _slidesShowContainer.queryAll('.slide-container')[showSlideNumber].classes.add('selected-slide');
@@ -45,7 +41,8 @@ class Slides {
     document.body.style.transform = ''; //
     hideElements('#slide_mode, #slides_show');
     
-    document.query("#controls").style.position = '';
+    document.query("#controls").classes.remove("controls-in-slide-mode");
+    
     
     document.body.classes.remove('full');
     

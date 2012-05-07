@@ -185,7 +185,7 @@ section.slide li > ol {
 }
 
 section.slide ul li:before {
-	content: "•";
+	content: "ï¿½";
 	font-weight:bold;
 }
 

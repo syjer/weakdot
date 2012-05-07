@@ -179,13 +179,21 @@ section.slide ul {
 	counter-reset:list;
 }
 
+section.slide em {
+	font-style: oblique;
+}
+
+section.slide strong {
+	font-weight:bold;
+}
+
 section.slide li > ul,
 section.slide li > ol {
 	margin-left:30px;
 }
 
 section.slide ul li:before {
-	content: "�";
+	content: "•";
 	font-weight:bold;
 }
 

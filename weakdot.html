@@ -14,13 +14,15 @@ function callbackForJsonpApi(s) {
   
   	<div id="controls">
   		<div id="edit_mode">
-  			title : <input type="text" value="Untitled slide" id="slide_title"> <button id="save_slide">save</button> | 
-  			saved slides: <select id="slide_list"></select>
-  			<button id="show_hide_preview_button">hide preview</button>
-  			<button id="toggle_slide_mode_button">launch slides</button>
+  			<ul>
+  				<li><label>title : <input type="text" value="Untitled slide" id="slide_title" class="input-elem"></label> <button id="save_slide" class="btn">save</button> 
+  				<li><label>saved slides: <select id="slide_list" class="select-elem"></select></label>
+  				<li><button id="show_hide_preview_button" class="btn">hide preview</button>
+  				<li><button id="toggle_slide_mode_button" class="btn btn-primary">launch slides</button>
+  			</ul>
   		</div>
   		<div id="slide_mode">
-  			<button id="toggle_edit_mode_button">edit mode</button>
+  			<button id="toggle_edit_mode_button" class="btn">edit mode</button>
   		</div>
   	</div>
   
@@ -30,9 +32,9 @@ function callbackForJsonpApi(s) {
     			<textarea id="text"></textarea>
     			<div style="margin-top:20px">
     				<ul>
-    					<li><button id="load_template">load template</button></li>
-    					<li>load presentation from github <input type="text" id="github_url"> <button id="github_load">load</button></li>
-    					<li><button id="clear_storage">clear all (spoiler alert: it clear the local storage).</button></li>
+    					<li><button id="load_template" class="btn">load template</button></li>
+    					<li>load presentation from github: <input type="text" id="github_url" class="input-elem"> <button id="github_load" class="btn btn-primary">load</button></li>
+    					<li><button id="clear_storage" class="btn btn-danger">clear all (warning!)</button></li>
     				</ul>
     			</div>
     		</div>

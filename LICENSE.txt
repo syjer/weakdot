@@ -1,8 +1,11 @@
-Markdown code imported from https://dart.googlecode.com/svn-history/r3537/branches/bleeding_edge/dart/samples/markdown/
-use the following license: https://dart.googlecode.com/svn-history/r3537/branches/bleeding_edge/LICENSE .
+Markdown code imported from https://dart.googlecode.com/svn/trunk/dart/lib/dartdoc/
+use the following license: https://dart.googlecode.com/svn/trunk/LICENSE .
 
 Portion of the css is imported/inspired from https://github.com/pepelsbey/shower use the following license:
 https://raw.github.com/pepelsbey/shower/master/license.txt
+
+Portion of the css is imported from twitter boostrap which use the following license:
+https://github.com/twitter/bootstrap/blob/master/LICENSE
 
 
 The rest is under the WTFPL:

@@ -1,13 +1,14 @@
 TODO:
 -----
-1: gui (still a battlefield...)
-2: save/load slides gui for localstorage is quite messy!
-3: use history api for creating nice url for saving the state
+0: as a default, hide the "edit mode" button in the presentation.
+1: save/load slides gui for localstorage is quite messy!
+2: use history api for creating nice url for saving the state
 3: export to imgur, export to file, import from imgur, import from other github urls (gist, raw url)
 
 misc:
 
-when exiting the slide mode, the current slide should be the one focused in the preview mode.
+- when exiting the slide mode, the current slide should be the one focused in the preview mode.
+- tweak align/css on the top menu/ {hide/show {load template/load from/etc...}}
 
 
 ------

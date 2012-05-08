@@ -48,12 +48,13 @@ table {
 }
 
 /* end reset */
-    
-    
-
 body {  
 	counter-reset: preview_slide_page; 
 	font-family:sans-serif;
+}
+
+textarea, pre, code {
+	font-family: monospace;
 }
 
 #edit_mode {

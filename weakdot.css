@@ -156,8 +156,8 @@ section.slide {
 
 section.slide {
 	color: #000000;
-    height: 560px;
-    padding: 80px 120px 0;
+    height: 580px;
+    padding: 60px 120px 0;
     width: 784px;
 }
 
@@ -172,7 +172,7 @@ section.slide h7 {
 	color: #666666;
 	font-weight: bold;
 	font-size: 40px;
-	margin-bottom:58px;
+	margin-bottom:38px;
 }
 
 section.slide ol,
@@ -225,6 +225,11 @@ section.slide blockquote {
 	font-style:italic;
 	border-left:20px solid #ccc;
 	padding-left:10px;
+}
+
+section.slide pre {
+	margin-top:10px;
+	margin-bottom:10px;
 }
 
 .full {
